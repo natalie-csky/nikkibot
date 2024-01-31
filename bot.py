@@ -15,12 +15,12 @@ bot = commands.Bot(command_prefix="$", intents=intents)
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
 
-@client.event
+@bot.event
 async def on_ready():
     print(f"NikkiBot is up and running :3")
 
 
-@client.event
+@bot.event
 async def on_message(message):
     if message.author == client.user:
         return
