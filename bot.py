@@ -38,7 +38,6 @@ TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aolj
 
 import discord
 from discord.ext import commands
-import random
 
 
 intents = discord.Intents.default()
