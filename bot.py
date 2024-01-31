@@ -10,7 +10,7 @@ intents.message_content = True
 # intents.members = True
 
 client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="n:", intents=intents)
 
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
@@ -27,10 +27,11 @@ async def on_message(message):
     if message.content.startswith("$hello"):
         await message.channel.send("Hello!")
 
-@bot.command()
+@bot.command(name="uwu")
 async def test(ctx, arg):
-    print("test command executed")
-    await ctx.send(arg)
+    await ctx.send("hewwo :3")
 
 
 client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
+
+bot.add_command(test)
