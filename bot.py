@@ -6,11 +6,12 @@ TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aolj
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 # intents.presences = True
 # intents.members = True
 
-client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix="$", intents=intents)
+# client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
@@ -27,6 +28,7 @@ async def on_message(message):
 
     if message.content.startswith("$hello"):
         await message.channel.send("Hello!")
+
 
 @bot.command()
 async def test(ctx, arg):
