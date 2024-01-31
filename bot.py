@@ -28,11 +28,9 @@ async def on_message(message):
     if message.content.startswith("$hello"):
         await message.channel.send("Hello!")
 
-
 @bot.command()
 async def test(ctx, arg):
-    print("ello")
-    await ctx.send("hewwo :3")
+    await ctx.send(arg)
 
 
-client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
+bot.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
