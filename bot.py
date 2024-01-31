@@ -20,7 +20,7 @@ async def on_message(message):
         await message.channel.send("Hello!")
 
 
-client.run("KGF46g0UwHW8H5XN7rxJzwR_PTSFIWMf")
+client.run("MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aoljE")
 
 
 # def main() -> int:
