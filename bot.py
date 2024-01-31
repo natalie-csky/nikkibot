@@ -5,7 +5,7 @@ from discord.ext import commands
 TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aoljE"
 
 intents = discord.Intents(message_content = True)
-# intents.message_content = True
+intents.message_content = True
 # intents.presences = True
 # intents.members = True
 
@@ -24,13 +24,13 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # if message.content.startswith("$hello"):
-    #     await message.channel.send("Hello!")
+    if message.content.startswith("$hello"):
+        await message.channel.send("Hello!")
 
-@bot.command(name="uwu")
+@bot.command()
 async def test(ctx, arg):
     print("test command executed")
-    await ctx.send(f":3")
+    await ctx.send(arg)
 
 
 client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
