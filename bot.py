@@ -10,9 +10,10 @@ intents.message_content = True
 # intents.members = True
 
 client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="$", intents=intents)
 
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+
 
 @client.event
 async def on_ready():
@@ -27,8 +28,10 @@ async def on_message(message):
     if message.content.startswith("$hello"):
         await message.channel.send("Hello!")
 
-@bot.command
+
+@bot.command()
 async def test(ctx, arg):
+    print("ello")
     await ctx.send("hewwo :3")
 
 
