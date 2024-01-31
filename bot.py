@@ -53,9 +53,8 @@ async def on_ready():
     print(f"NikkiBot is up and running :3")
 
 @bot.command()
-async def choose(ctx, *choices: str):
-    """Chooses between multiple choices."""
-    await ctx.send(random.choice(choices))
+async def choose(ctx, arg):
+    await ctx.send(arg)
 
 
 bot.run(TOKEN)
