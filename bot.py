@@ -52,7 +52,7 @@ bot = commands.Bot(command_prefix='?', intents=intents)
 async def on_ready():
     print(f"NikkiBot is up and running :3")
 
-@bot.command(description='For when you wanna settle the score some other way')
+@bot.command()
 async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
     await ctx.send(random.choice(choices))
