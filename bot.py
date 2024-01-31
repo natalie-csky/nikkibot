@@ -10,13 +10,13 @@ intents = discord.Intents(message_content = True)
 # intents.members = True
 
 client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix="n:", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
 @client.event
 async def on_ready():
-    print(f"We have logged in as {client.user}")
+    print(f"NikkiBot is up and running :3")
 
 
 @client.event
@@ -29,7 +29,8 @@ async def on_message(message):
 
 @bot.command(name="uwu")
 async def test(ctx, arg):
-    await ctx.send(":3")
+    print("test command executed")
+    await ctx.send(f":3")
 
 
 client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
