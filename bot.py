@@ -34,7 +34,8 @@ async def test(ctx, arg):
     print("ello")
     await ctx.send("hewwo :3")
 
+bot.add_command(test)
+
 
 client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
 
-bot.add_command(test)
