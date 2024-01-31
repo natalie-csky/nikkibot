@@ -1,1 +1,1 @@
-pip install -U discord.py[voice]
+discord.py[voice]
