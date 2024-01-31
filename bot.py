@@ -1,4 +1,4 @@
-# import logging
+import logging
 # import discord
 # from discord.ext import commands
 
@@ -12,7 +12,7 @@ TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aolj
 # # client = discord.Client(intents=intents)
 # bot = commands.Bot(command_prefix="$", intents=intents)
 
-# handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
 
 # @bot.event
@@ -43,7 +43,7 @@ from discord.ext import commands
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='n:', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 
 @bot.event
@@ -56,4 +56,4 @@ async def test(ctx, arg):
     await ctx.send(arg)
 
 
-bot.run(TOKEN)
+bot.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
