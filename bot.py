@@ -6,25 +6,24 @@ TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aolj
 
 intents = discord.Intents.default()
 intents.message_content = True
-# # intents.presences = True
-# # intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+
 
 @bot.event
 async def on_ready():
     print(f"NikkiBot is up and running :3")
 
 
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
+# @bot.event
+# async def on_message(message):
+#     if message.author == bot.user:
+#         return
 
-    if message.content.startswith("$hello"):
-        await message.channel.send("Hello!")
+#     if message.content.startswith("$hello"):
+#         await message.channel.send("Hello!")
 
 
 @bot.command()
