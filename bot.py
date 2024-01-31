@@ -52,8 +52,9 @@ bot = commands.Bot(command_prefix='?', intents=intents)
 async def on_ready():
     print(f"NikkiBot is up and running :3")
 
+
 @bot.command()
-async def choose(ctx, arg):
+async def test(ctx, arg):
     await ctx.send(arg)
 
 
