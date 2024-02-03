@@ -21,9 +21,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    print("channel: ", message.channel)
-    print("category: ", message.channel.category)
-    if message.channel == "botausbeutung" and message.channel.category == "chefetage":
+    if message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage":
         print("ello")
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
