@@ -1,4 +1,3 @@
-import logging
 import discord
 from discord.ext import commands
 
@@ -8,8 +7,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
-handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 
 
 @bot.event
@@ -27,4 +24,9 @@ async def test2(ctx, arg):
     await ctx.send(arg)
 
 
-bot.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
+@bot.command(name="Good girl")
+async def test3(ctx):
+    await ctx.send(":3")
+
+
+bot.run(TOKEN)
