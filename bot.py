@@ -21,7 +21,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.author.guild.name == "Doomertreffpunkt":
+    if not (message.author.channel == "botausbeutung" and message.author.channel.category == "chefetage"):
         return
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
