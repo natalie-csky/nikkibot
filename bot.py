@@ -21,7 +21,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    print(message.author)
+    print(type(message.author))
     if message.author is discord.User:
         print("ello2")
         
