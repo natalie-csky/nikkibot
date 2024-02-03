@@ -23,6 +23,9 @@ async def on_message(message):
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
     
+    elif message.content.startswith(":3"):
+        await message.channel.send(":3")
+    
     elif message.content.startswith(PREFIX + "create_channel"):
         await message.channel.send("will do :3")
 
