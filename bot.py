@@ -22,7 +22,7 @@ async def on_message(message):
         return
 
 
-    if message.author.channel == "botausbeutung" and message.author.channel.category == "chefetage":
+    if message.channel == "botausbeutung" and message.channel.category == "chefetage":
         print("ello")
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
