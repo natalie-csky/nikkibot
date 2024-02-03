@@ -22,4 +22,9 @@ async def on_message(message):
         await message.channel.send(":3")
 
 
+@client.event
+async def on_typing(channel, user, when):
+    print(channel, user, when)
+
+
 client.run(TOKEN)
