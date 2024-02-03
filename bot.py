@@ -21,6 +21,9 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if message.author.guild.name == "Doomertrefpunkt":
+        return
+
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
     
