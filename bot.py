@@ -21,8 +21,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if not (message.author.channel == "botausbeutung" and message.author.channel.category == "chefetage"):
-        return
+    if message.author.channel == "botausbeutung" and message.author.channel.category == "chefetage":
+        print("ello")
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
