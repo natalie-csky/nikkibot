@@ -13,7 +13,7 @@ PREFIX = "!"
 
 @client.event
 async def on_ready():
-    print(f"NikkiBot is up and running :3")
+    print("NikkiBot is up and running :3")
 
 
 @client.event
@@ -21,8 +21,9 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if not (message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage"):
-        return
+    if message.guild == "Doomertreffpunkt":
+        if not (message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage"):
+            return
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
