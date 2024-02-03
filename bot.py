@@ -10,6 +10,7 @@ client = discord.Client(intents=intents)
 PREFIX = "!"
 
 
+
 @client.event
 async def on_ready():
     print(f"NikkiBot is up and running :3")
@@ -26,8 +27,11 @@ async def on_message(message):
     elif message.content.startswith(":3"):
         await message.channel.send(":3")
     
-    elif message.content.startswith(PREFIX + "create_channel"):
-        await message.channel.send("will do :3")
+    elif message.content.startswith(PREFIX + "Nikki, create channel"):
+        channel = await message.author.guild.create_text_channel("HajChannel")
+    
+    # elif message.content.startswith(PREFIX + "nikki, clone channel"):
+    #     await clone(name="CoolName", )
 
 
 client.run(TOKEN)
