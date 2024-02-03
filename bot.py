@@ -23,6 +23,7 @@ async def on_message(message):
 
     if message.author is discord.User:
         print("ello2")
+        print(message.author)
         if message.author.channel == "botausbeutung" and message.author.channel.category == "chefetage":
             print("ello")
 
