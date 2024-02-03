@@ -1,32 +1,25 @@
 import discord
-from discord.ext import commands
 
 TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aoljE"
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+client = discord.Client(intents=intents)
 
 
-@bot.event
+@client.event
 async def on_ready():
     print(f"NikkiBot is up and running :3")
 
 
-@bot.command()
-async def test(ctx, arg):
-    await ctx.send(arg)
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith("Good girl") or message.content.startswith("good girl"):
+        await message.channel.send(":3")
 
 
-@bot.command()
-async def test2(ctx, arg):
-    await ctx.send(arg)
-
-
-@bot.command(name="Good girl")
-async def test3(ctx):
-    await ctx.send(":3")
-
-
-bot.run(TOKEN)
+client.run(TOKEN)
