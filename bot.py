@@ -18,7 +18,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    f message.author == client.user:
+    if message.author == client.user:
         return
 
     if message.guild.name == "Doomertreffpunkt":
@@ -38,10 +38,9 @@ async def on_message(message):
         channel = await message.author.guild.create_text_channel("HajChannel")
     
     if message.content.startswith(PREFIX + "Nikki, sende DM an"):
-        channel = await message.channel.send("test")
-    
-    if message.content.startswith(PREFIX + "print"):
-        print("test")
+        # channel = await message.channel.send("test")
+        arguments = message.content.removeprefix(PREFIX + "Nikki, sende DM an")
+        await message.author.guild.create_text_channel(arguments)
 
 
 client.run(TOKEN)
