@@ -45,7 +45,7 @@ unvalid_responses: dict[str, int] = {
     "Nah dran, glaub ich. Versuch nochmal.": 15,
     "Wie war das? Ich versteh dich nicht so gut.": 7,
     "error (value < 0): user iq too low": 2,
-    "{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 200
+    "{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 2
 }
 
 #endregion
