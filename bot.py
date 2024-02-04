@@ -2,8 +2,9 @@ import discord
 
 #region members
 
-msg = discord.Message
-ch = discord.abc.Messageable
+Msg = discord.Message
+Ch = discord.abc.Messageable
+Server = discord.Guild
 
 PREFIX = "!Nikki, "
 
@@ -21,16 +22,36 @@ client = discord.Client(intents=intents)
 class CMD:
 
     @staticmethod
-    async def say_neko_smile(channel: ch) -> None:
+    async def say_neko_smile(channel: Ch) -> None:
         await channel.send(":3")
 
 
     @staticmethod
-    async def send_dm_all(user_msg: str, channel: ch) -> None:
+    async def send_dm(user_msg: str, channel: Ch) -> None:
+        server: Server = channel.guild
+        print("server is: ", server)
         arguments: list[str] = user_msg.split(" ")
+        argument_count: int = 0
+
+        to_all = False
+        user_id: int
+        return
         for argument in arguments:
-            if not argument == "":
-                await channel.send(argument)
+
+            if argument == "":
+                continue
+
+            match argument_count:
+
+                case 0:
+                    if argument.casefold() == "alle":
+                        to_all = True
+                        argument_count += 1
+                        continue
+
+
+
+
 
 
 @client.event
@@ -39,7 +60,7 @@ async def on_ready() -> None:
 
 
 @client.event
-async def on_message(message: msg) -> None:
+async def on_message(message: Msg) -> None:
 
     if message.author == client.user:
         return
@@ -53,7 +74,7 @@ async def on_message(message: msg) -> None:
         await in_geheimlabor(message)
 
 
-async def in_any_guild(message: msg) -> None:
+async def in_any_guild(message: Msg) -> None:
 
     if message.content.casefold().startswith("good girl"):
         await CMD.say_neko_smile(message.channel)
@@ -62,15 +83,15 @@ async def in_any_guild(message: msg) -> None:
         await CMD.say_neko_smile(message.channel)
 
 
-async def in_doomertreffpunkt(message: msg) -> None:
+async def in_doomertreffpunkt(message: Msg) -> None:
     if not (message.channel.id == 1115389541696667879 and message.channel.category.id == 1113691175803695124):
         return
 
 
-async def in_geheimlabor(message: msg) -> None:
+async def in_geheimlabor(message: Msg) -> None:
     if message.content.startswith(PREFIX + "sende DM an"):
         user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-        await CMD.send_dm_all(user_msg, message.channel)
+        await CMD.send_dm(user_msg, message.channel)
 
 
 client.run(TOKEN)
