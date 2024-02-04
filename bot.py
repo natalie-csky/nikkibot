@@ -115,7 +115,8 @@ def get_normalized_probability_weights() -> list[float]:
     normalized_weights: list[float]
 
     for unvalid_response in unvalid_responses:
-        normalized_weight: float = weight_modifier * unvalid_responses[unvalid_response]
+        global normalized_weight
+        normalized_weight = weight_modifier * unvalid_responses[unvalid_response]
         normalized_weights.append(normalized_weight)
 
     return normalized_weights
