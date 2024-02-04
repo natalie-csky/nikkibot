@@ -29,7 +29,7 @@ class CMD:
     async def send_dm_all(user_msg: str, channel: ch) -> None:
         arguments: list[str] = user_msg.split(" ")
         for argument in arguments:
-            if not argument == " ":
+            if not argument == "":
             # await channel.send(argument)
                 print(argument)
         # await channel.send(argument)
