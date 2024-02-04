@@ -18,8 +18,9 @@ class CMD:
 
 
     @staticmethod
-    async def send_dm_all(argument: msg) -> None:
-        argument.channel.send(argument)
+    async def send_dm_all(argument: msg, channel: ch) -> None:
+        channel.send(argument)
+
 
 @client.event
 async def on_ready() -> None:
@@ -58,7 +59,7 @@ async def in_doomertreffpunkt(message: msg) -> None:
 async def in_geheimlabor(message: msg) -> None:
     if message.content.startswith(PREFIX + "sende DM an"):
         argument = message.content.removeprefix(PREFIX + "sende DM an")
-        await CMD.send_dm_all(argument)
+        await CMD.send_dm_all(argument, message.channel)
 
 
 client.run(TOKEN)
