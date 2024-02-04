@@ -43,7 +43,7 @@ async def in_geheimlabor(message: discord.Message) -> None:
         arguments = message.content.removeprefix(PREFIX + "sende DM an")
         await message.channel.send(arguments)
     
-    if message.content.casefold().startswith("Good girl"):
+    if message.content.casefold().startswith("good girl"):
         await message.channel.send(":3")
 
 
