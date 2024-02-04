@@ -22,26 +22,26 @@ client = discord.Client(intents=intents)
 is_valid_message: bool
 
 unvalid_responses: dict[str, int] = {
-    "Hm?": 8,
-    "Wat?": 8,
-    "Was laberst du?": 5,
-    "Hascht du überhaupt gelernt, Alter, was labersch du?": 3,
-    "Was du am Labern bist hab ich gefragt.": 3,
-    "Excusez-moi?": 6,
-    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.": 3,
+    "Hm?": 20,
+    "Wat?": 20,
+    "Was laberst du?": 15,
+    "Hascht du überhaupt gelernt, Alter, was labersch du?": 9,
+    "Was du am Labern bist hab ich gefragt.": 7,
+    "Excusez-moi?": 15,
+    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.": 4,
     "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 1,
-    "Red Deutsch.": 5,
-    "Sprich Deutsch.": 5,
-    "Sprich Klartext.": 5,
-    "Red mal Klartext.": 5,
-    "?": 8,
-    "???": 8,
-    "!?": 8,
-    "Entschuldigung?": 8,
-    "Bitte was?": 6,
-    "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 2,
-    "Nah dran, glaub ich. Versuch nochmal.": 4,
-    "Wie war das? Ich versteh dich nicht so gut.": 4
+    "Red Deutsch.": 15,
+    "Sprich Deutsch.": 15,
+    "Sprich Klartext.": 15,
+    "Red mal Klartext.": 15,
+    "?": 20,
+    "???": 20,
+    "!?": 20,
+    "Entschuldigung?": 17,
+    "Bitte was?": 17,
+    "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 1,
+    "Nah dran, glaub ich. Versuch nochmal.": 15,
+    "Wie war das? Ich versteh dich nicht so gut.": 7
 }
 
 #endregion
