@@ -21,7 +21,14 @@ async def on_message(message: discord.Message) -> None:
         return
 
     if message.guild.name == "Doomertreffpunkt":
-        if not (message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage"):
+        await in_doomertreffpunkt(message)
+    
+    if message.guild.name == "Geheimlabor":
+        await in_geheimlabor
+    
+    
+async def in_doomertreffpunkt(message: discord.Message) -> None:
+    if not (message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage"):
             return
 
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
@@ -29,10 +36,9 @@ async def on_message(message: discord.Message) -> None:
     
     if message.content.find(":3") != -1:
         await message.channel.send(":3")
-    
-    if message.guild.name == "Doomertreffpunkt":
-        return
-    
+
+
+async def in_geheimlabor(message: discord.Message) -> None:
     if message.content.startswith(PREFIX + "sende DM an"):
         arguments = message.content.removeprefix(PREFIX + "sende DM an")
         await message.channel.send(arguments)
