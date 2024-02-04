@@ -1,16 +1,22 @@
 import discord
 
+#region members
+
 msg = discord.Message
 ch = discord.abc.Messageable
 
 PREFIX = "!Nikki, "
+
+TOKEN_FILE = "token"
 TOKEN: str
-with open("token", encoding="utf-8") as f:
+with open(TOKEN_FILE, encoding="utf-8") as f:
     TOKEN = f.read()
 
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+
+#endregion
 
 class CMD:
 
@@ -20,8 +26,11 @@ class CMD:
 
 
     @staticmethod
-    async def send_dm_all(argument: msg, channel: ch) -> None:
-        await channel.send(argument)
+    async def send_dm_all(message: msg, channel: ch) -> None:
+        arguments: list[str] = message.content.split(" ")
+        for argument in arguments:
+            await channel.send(argument)
+        # await channel.send(argument)
 
 
 @client.event
