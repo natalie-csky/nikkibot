@@ -74,8 +74,8 @@ async def on_message(message: Msg) -> None:
     if message.guild.name == "Geheimlabor":
         is_valid_message = await in_geheimlabor(message)
 
-    if not is_valid_message:
-        message.channel.send("Hm?")
+    if message.content.startswith(PREFIX) and not is_valid_message:
+        await message.channel.send("Hm?")
 
 
 async def in_any_guild(message: Msg) -> bool:
