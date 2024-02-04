@@ -28,7 +28,7 @@ async def on_message(message):
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
     
-    if message.content.contains(":3"):
+    if message.content.find(":3") != -1:
         await message.channel.send(":3")
     
     if message.guild.name == "Doomertreffpunkt":
