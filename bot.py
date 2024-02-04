@@ -30,9 +30,7 @@ class CMD:
         arguments: list[str] = user_msg.split(" ")
         for argument in arguments:
             if not argument == "":
-            # await channel.send(argument)
-                print(argument)
-        # await channel.send(argument)
+                await channel.send(argument)
 
 
 @client.event
