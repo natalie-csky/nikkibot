@@ -1,4 +1,5 @@
 import discord
+import random
 
 #region members
 
@@ -18,6 +19,13 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 is_valid_message: bool
+
+unvalid_responses: list[str] = [
+    "Hm?",
+    "Wat?",
+    "Was laberst du",
+    "Hascht du überhaupt gelernt, Alter, was labersch du?"
+]
 
 #endregion
 
@@ -75,7 +83,8 @@ async def on_message(message: Msg) -> None:
         is_valid_message = await in_geheimlabor(message)
 
     if message.content.startswith(PREFIX) and not is_valid_message:
-        await message.channel.send("Hm?")
+        unvalid_response: str = random.choice(unvalid_responses)
+        await message.channel.send(unvalid_response)
 
 
 async def in_any_guild(message: Msg) -> bool:
