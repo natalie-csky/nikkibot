@@ -25,7 +25,7 @@ unvalid_responses: dict[str, int] = {
     "Hm?": 20,
     "Wat?": 20,
     "Was laberst du?": 15,
-    "Hascht du überhaupt gelernt, Alter, was labersch du?": 9,
+    "Hascht du überhaupt gelernt, Alter, was labersch du?": 7,
     "Was du am Labern bist hab ich gefragt.": 7,
     "Excusez-moi?": 15,
     "Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
@@ -42,7 +42,8 @@ unvalid_responses: dict[str, int] = {
     "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 1,
     "Nah dran, glaub ich. Versuch nochmal.": 15,
     "Wie war das? Ich versteh dich nicht so gut.": 7,
-    "error (value < 0): user iq too low": 2
+    "error (value < 0): user iq too low": 2,
+    "{user} stellt Anfrage! Es ist nicht sehr effektiv...": 200
 }
 
 #endregion
@@ -106,6 +107,8 @@ async def on_message(message: Msg) -> None:
             a.append(unvalid_response)
         p: list[float] = get_normalized_probability_weights()
         unvalid_response: str = choice(a=a, p=p)
+        if not unvalid_response.find("{user}") == -1:
+            unvalid_response.format(user = message.author.name)
         await message.channel.send(unvalid_response)
 
 
