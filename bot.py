@@ -19,7 +19,7 @@ class CMD:
 
     @staticmethod
     async def send_dm_all(argument: msg) -> None:
-        msg.channel.send(argument)
+        argument.channel.send(argument)
 
 @client.event
 async def on_ready() -> None:
