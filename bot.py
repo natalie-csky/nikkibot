@@ -108,7 +108,7 @@ async def on_message(message: Msg) -> None:
         p: list[float] = get_normalized_probability_weights()
         unvalid_response: str = choice(a=a, p=p)
         if not unvalid_response.find("{user}") == -1:
-            unvalid_response.format(user = message.author.name)
+            unvalid_response = unvalid_response.format(user = message.author.name)
         await message.channel.send(unvalid_response)
 
 
