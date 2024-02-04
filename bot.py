@@ -6,6 +6,7 @@ ch = discord.abc.Messageable
 PREFIX = "!Nikki, "
 TOKEN: str
 with open("token", encoding="utf-8") as f:
+    print("reading the token")
     TOKEN = f.read()
 
 intents = discord.Intents.default()
