@@ -28,14 +28,17 @@ async def on_message(message):
     if message.content.startswith("Good girl") or message.content.startswith("good girl"):
         await message.channel.send(":3")
     
-    elif message.content.startswith(":3"):
+    if message.content.startswith(":3"):
         await message.channel.send(":3")
     
-    elif message.content.startswith(PREFIX + "Nikki, create channel"):
+    if message.guild.name == "Doomertreffpunkt":
+        return
+
+    if message.content.startswith(PREFIX + "Nikki, create channel"):
         channel = await message.author.guild.create_text_channel("HajChannel")
     
-    # elif message.content.startswith(PREFIX + "nikki, clone channel"):
-    #     await clone(name="CoolName", )
+    if message.content.startswith(PREFIX + "Nikki, sende DM an"):
+        channel = await message.channel.send("test")
 
 
 client.run(TOKEN)
