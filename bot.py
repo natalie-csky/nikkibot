@@ -14,12 +14,12 @@ class CMD:
 
     @staticmethod
     async def say_neko_smile(channel: ch) -> None:
-        channel.send(":3")
+        await channel.send(":3")
 
 
     @staticmethod
     async def send_dm_all(argument: msg, channel: ch) -> None:
-        channel.send(argument)
+        await channel.send(argument)
 
 
 @client.event
