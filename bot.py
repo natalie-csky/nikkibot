@@ -100,9 +100,11 @@ async def on_message(message: Msg) -> None:
         is_valid_message = await in_geheimlabor(message)
 
     if message.content.startswith(PREFIX) and not is_valid_message:
+        a: list[str] = []
+        for unvalid_response in unvalid_responses:
+            a.append(unvalid_responses[unvalid_response])
         p: list[float] = get_normalized_probability_weights()
-        print(p)
-        unvalid_response: str = choice(unvalid_responses, p=p)
+        unvalid_response: str = choice(a=a, p=p)
         await message.channel.send(unvalid_response)
 
 
@@ -111,12 +113,11 @@ def get_normalized_probability_weights() -> list[float]:
     for unvalid_response in unvalid_responses:
         weight_total += unvalid_responses[unvalid_response]
 
-    weight_modifier: float = 10 / weight_total
+    weight_modifier: float = 1 / weight_total
     normalized_weights: list[float] = []
 
     for unvalid_response in unvalid_responses:
-        global normalized_weight
-        normalized_weight = weight_modifier * unvalid_responses[unvalid_response]
+        normalized_weight: float = weight_modifier * unvalid_responses[unvalid_response]
         normalized_weights.append(normalized_weight)
 
     return normalized_weights
