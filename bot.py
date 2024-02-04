@@ -9,9 +9,11 @@ Ch = discord.abc.Messageable
 Server = discord.Guild
 
 PREFIX = "!Nikki, "
+BOT_NAME = "NikkiBot"
 
 TOKEN_FILE = "token"
 TOKEN: str
+
 with open(TOKEN_FILE, encoding="utf-8") as f:
     TOKEN = f.read()
 
@@ -43,7 +45,7 @@ unvalid_responses: dict[str, int] = {
     "Nah dran, glaub ich. Versuch nochmal.": 15,
     "Wie war das? Ich versteh dich nicht so gut.": 7,
     "error (value < 0): user iq too low": 2,
-    "{user} befehligt NikkiBot! Es ist nicht sehr effektiv...": 2
+    "{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 200
 }
 
 #endregion
