@@ -10,6 +10,16 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+class CMD:
+
+    @staticmethod
+    async def say_neko_smile(channel: ch) -> None:
+        channel.send(":3")
+
+
+    @staticmethod
+    async def send_dm_all(argument: msg) -> None:
+        msg.channel.send(argument)
 
 @client.event
 async def on_ready() -> None:
@@ -52,15 +62,3 @@ async def in_geheimlabor(message: msg) -> None:
 
 
 client.run(TOKEN)
-
-
-class CMD:
-
-    @staticmethod
-    async def say_neko_smile(channel: ch) -> None:
-        channel.send(":3")
-
-
-    @staticmethod
-    async def send_dm_all(argument: msg) -> None:
-        msg.channel.send(argument)
