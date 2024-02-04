@@ -18,7 +18,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    f message.author == client.user:
+    if message.author == client.user:
         return
 
     if message.guild.name == "Doomertreffpunkt":
