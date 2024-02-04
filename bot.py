@@ -40,7 +40,7 @@ async def on_message(message):
     if message.content.startswith(PREFIX + "Nikki, sende DM an"):
         # channel = await message.channel.send("test")
         arguments = message.content.removeprefix(PREFIX + "Nikki, sende DM an")
-        await message.author.guild.create_text_channel(arguments)
+        await message.author.channel.send(arguments)
 
 
 client.run(TOKEN)
