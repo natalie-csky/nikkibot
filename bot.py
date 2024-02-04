@@ -1,5 +1,6 @@
 import discord
 import random
+from numpy.random import choice
 
 #region members
 
@@ -20,16 +21,28 @@ client = discord.Client(intents=intents)
 
 is_valid_message: bool
 
-unvalid_responses: list[str] = [
-    "Hm?",
-    "Wat?",
-    "Was laberst du?",
-    "Hascht du überhaupt gelernt, Alter, was labersch du?",
-    "Was du am Labern bist hab ich gefragt.",
-    "Excusez-moi?",
-    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.",
-    "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt."
-]
+unvalid_responses: dict[str, int] = {
+    "Hm?": 8,
+    "Wat?": 8,
+    "Was laberst du?": 5,
+    "Hascht du überhaupt gelernt, Alter, was labersch du?": 3,
+    "Was du am Labern bist hab ich gefragt.": 3,
+    "Excusez-moi?": 6,
+    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.": 3,
+    "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 1,
+    "Red Deutsch.": 5,
+    "Sprich Deutsch.": 5,
+    "Sprich Klartext.": 5,
+    "Red mal Klartext.": 5,
+    "?": 8,
+    "???": 8,
+    "!?": 8,
+    "Entschuldigung?": 8,
+    "Bitte was?": 6,
+    "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 2,
+    "Nah dran, glaub ich. Versuch nochmal.": 4,
+    "Wie war das? Ich versteh dich nicht so gut.": 4
+}
 
 #endregion
 
@@ -87,8 +100,25 @@ async def on_message(message: Msg) -> None:
         is_valid_message = await in_geheimlabor(message)
 
     if message.content.startswith(PREFIX) and not is_valid_message:
-        unvalid_response: str = random.choice(unvalid_responses)
+        p: list[float] = get_normalized_probability_weights()
+        print(p)
+        unvalid_response: str = choice(unvalid_responses, p=p)
         await message.channel.send(unvalid_response)
+
+
+def get_normalized_probability_weights() -> list[float]:
+    weight_total: float = 0.0
+    for unvalid_response in unvalid_responses:
+        weight_total += unvalid_responses[unvalid_response]
+
+    weight_modifier: float = 10 / weight_total
+    normalized_weights: list[float]
+
+    for unvalid_response in unvalid_responses:
+        normalized_weight: float = weight_modifier * unvalid_responses[unvalid_response]
+        normalized_weights.append(normalized_weight)
+
+    return normalized_weights
 
 
 async def in_any_guild(message: Msg) -> bool:
