@@ -28,8 +28,8 @@ unvalid_responses: dict[str, int] = {
     "Hascht du überhaupt gelernt, Alter, was labersch du?": 9,
     "Was du am Labern bist hab ich gefragt.": 7,
     "Excusez-moi?": 15,
-    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.": 3,
-    "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 1,
+    "Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
+    "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 2,
     "Red Deutsch.": 12,
     "Sprich Deutsch.": 12,
     "Sprich Klartext.": 12,
@@ -41,7 +41,8 @@ unvalid_responses: dict[str, int] = {
     "Bitte was?": 17,
     "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 1,
     "Nah dran, glaub ich. Versuch nochmal.": 15,
-    "Wie war das? Ich versteh dich nicht so gut.": 7
+    "Wie war das? Ich versteh dich nicht so gut.": 7,
+    "error (value < 0): user iq too low": 2
 }
 
 #endregion
