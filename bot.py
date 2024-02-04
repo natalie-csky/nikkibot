@@ -24,7 +24,7 @@ async def on_message(message: discord.Message) -> None:
         await in_doomertreffpunkt(message)
     
     if message.guild.name == "Geheimlabor":
-        await in_geheimlabor
+        await in_geheimlabor(message)
     
     
 async def in_doomertreffpunkt(message: discord.Message) -> None:
