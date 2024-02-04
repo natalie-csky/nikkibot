@@ -23,8 +23,12 @@ is_valid_message: bool
 unvalid_responses: list[str] = [
     "Hm?",
     "Wat?",
-    "Was laberst du",
-    "Hascht du überhaupt gelernt, Alter, was labersch du?"
+    "Was laberst du?",
+    "Hascht du überhaupt gelernt, Alter, was labersch du?",
+    "Was du am Labern bist hab ich gefragt.",
+    "Excusez-moi?",
+    "Bitte gehen Sie Ihre Anfrage nochmal Wort-für-Wort durch. Danke.",
+    "Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt."
 ]
 
 #endregion
