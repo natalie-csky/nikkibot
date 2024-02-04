@@ -7,17 +7,17 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-PREFIX = "!"
-
+PREFIX = "!Nikki, "
 
 
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     print("NikkiBot is up and running :3")
 
 
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message) -> None:
+    await message.delete()
     if message.author == client.user:
         return
 
@@ -33,14 +33,14 @@ async def on_message(message):
     
     if message.guild.name == "Doomertreffpunkt":
         return
-
-    if message.content.startswith(PREFIX + "Nikki, create channel"):
-        channel = await message.author.guild.create_text_channel("HajChannel")
     
-    if message.content.startswith(PREFIX + "Nikki, sende DM an"):
-        # channel = await message.channel.send("test")
-        arguments = message.content.removeprefix(PREFIX + "Nikki, sende DM an")
+    if message.content.startswith(PREFIX + "sende DM an"):
+        arguments = message.content.removeprefix(PREFIX + "sende DM an")
         await message.channel.send(arguments)
+
+
+
+def event_in_doomertreffpunkt(message) -> None:
 
 
 client.run(TOKEN)
