@@ -39,6 +39,9 @@ async def on_message(message):
     
     if message.content.startswith(PREFIX + "Nikki, sende DM an"):
         channel = await message.channel.send("test")
+    
+    if message.content.startswith(PREFIX + "print"):
+        print("test")
 
 
 client.run(TOKEN)
