@@ -9,7 +9,6 @@ client = discord.Client(intents=intents)
 
 PREFIX = "!Nikki, "
 
-
 @client.event
 async def on_ready() -> None:
     print("NikkiBot is up and running :3")
@@ -17,7 +16,7 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: discord.Message) -> None:
-    await message.delete()
+
     if message.author == client.user:
         return
 
@@ -38,9 +37,5 @@ async def on_message(message: discord.Message) -> None:
         arguments = message.content.removeprefix(PREFIX + "sende DM an")
         await message.channel.send(arguments)
 
-
-
-def event_in_doomertreffpunkt(message) -> None:
-    pass
 
 client.run(TOKEN)
