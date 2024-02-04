@@ -41,6 +41,6 @@ async def on_message(message: discord.Message) -> None:
 
 
 def event_in_doomertreffpunkt(message) -> None:
-
+    pass
 
 client.run(TOKEN)
