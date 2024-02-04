@@ -31,7 +31,7 @@ async def in_doomertreffpunkt(message: discord.Message) -> None:
     if not (message.channel.name == "botausbeutung" and message.channel.category.name == "chefetage"):
             return
 
-    if message.content.casefold.startswith("Good girl"):
+    if message.content.casefold().startswith("Good girl"):
         await message.channel.send(":3")
     
     if message.content.find(":3") != -1:
@@ -42,6 +42,9 @@ async def in_geheimlabor(message: discord.Message) -> None:
     if message.content.startswith(PREFIX + "sende DM an"):
         arguments = message.content.removeprefix(PREFIX + "sende DM an")
         await message.channel.send(arguments)
+    
+    if message.content.casefold().startswith("Good girl"):
+        await message.channel.send(":3")
 
 
 # def cmd_say_
