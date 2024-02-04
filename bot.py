@@ -3,8 +3,10 @@ import discord
 msg = discord.Message
 ch = discord.abc.Messageable
 
-TOKEN = "MTIwMjE2NzAyOTY2NzIwNTE0MQ.GcDc5x.6Eb7cZ7Xln8Qg7P74-twUev7SFm2jxFr6aoljE"
 PREFIX = "!Nikki, "
+TOKEN: str
+with open("token", encoding="utf-8") as f:
+    TOKEN = f.read()
 
 intents = discord.Intents.default()
 intents.message_content = True
