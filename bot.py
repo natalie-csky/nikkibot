@@ -17,6 +17,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+is_valid_message: bool
+
 #endregion
 
 class CMD:
@@ -28,14 +30,15 @@ class CMD:
 
     @staticmethod
     async def send_dm(user_msg: str, channel: Ch) -> None:
+
         server: Server = channel.guild
-        print("server is: ", server)
+
         arguments: list[str] = user_msg.split(" ")
         argument_count: int = 0
 
         to_all = False
         user_id: int
-        return
+
         for argument in arguments:
 
             if argument == "":
@@ -50,10 +53,6 @@ class CMD:
                         continue
 
 
-
-
-
-
 @client.event
 async def on_ready() -> None:
     print("NikkiBot is up and running :3")
@@ -62,36 +61,50 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Msg) -> None:
 
+    is_valid_message = False
+
     if message.author == client.user:
         return
 
-    await in_any_guild(message)
+    is_valid_message = await in_any_guild(message)
 
     if message.guild.name == "Doomertreffpunkt":
-        await in_doomertreffpunkt(message)
+        is_valid_message = await in_doomertreffpunkt(message)
 
     if message.guild.name == "Geheimlabor":
-        await in_geheimlabor(message)
+        is_valid_message = await in_geheimlabor(message)
+
+    if not is_valid_message:
+        message.channel.send("Hm?")
 
 
-async def in_any_guild(message: Msg) -> None:
+async def in_any_guild(message: Msg) -> bool:
 
     if message.content.casefold().startswith("good girl"):
         await CMD.say_neko_smile(message.channel)
+        return True
 
     if message.content.find(":3") != -1:
         await CMD.say_neko_smile(message.channel)
+        return True
+
+    return False
 
 
-async def in_doomertreffpunkt(message: Msg) -> None:
+async def in_doomertreffpunkt(message: Msg) -> bool:
     if not (message.channel.id == 1115389541696667879 and message.channel.category.id == 1113691175803695124):
         return
 
+    return False
 
-async def in_geheimlabor(message: Msg) -> None:
+
+async def in_geheimlabor(message: Msg) -> bool:
     if message.content.startswith(PREFIX + "sende DM an"):
         user_msg = message.content.removeprefix(PREFIX + "sende DM an")
         await CMD.send_dm(user_msg, message.channel)
+        return True
+
+    return False
 
 
 client.run(TOKEN)
