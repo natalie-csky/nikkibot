@@ -102,7 +102,7 @@ async def on_message(message: Msg) -> None:
     if message.content.startswith(PREFIX) and not is_valid_message:
         a: list[str] = []
         for unvalid_response in unvalid_responses:
-            a.append(unvalid_responses[unvalid_response])
+            a.append(unvalid_response)
         p: list[float] = get_normalized_probability_weights()
         unvalid_response: str = choice(a=a, p=p)
         await message.channel.send(unvalid_response)
