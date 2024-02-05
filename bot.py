@@ -131,6 +131,7 @@ class CMD:
 				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
+			print("middle")
 			if not user_id == int(argument):
 				continue
 			print("after except")
