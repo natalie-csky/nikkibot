@@ -115,7 +115,7 @@ class CMD:
 
 			try:
 				int(argument)
-			except ValueError as e:
+			except Exception as e:
 				print(e)
 				CMD.user_id_not_int_error = True
 				return None
