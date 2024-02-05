@@ -2,7 +2,7 @@ import discord
 from typing import cast
 from numpy.random import choice
 
-#region members
+# region members
 
 Message = discord.Message
 ServerTextChannel = discord.TextChannel | discord.Thread
@@ -53,8 +53,7 @@ unvalid_responses: dict[str, int] = {
 		"Du schreibst nämlich mit h, oder?": 2
 }
 
-#endregion
-
+# endregion
 
 class CMD:
 	to_all = False
@@ -105,6 +104,7 @@ class CMD:
 			user_id: int = member.id
 		return None
 
+
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
@@ -112,7 +112,7 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
-	assert(not message.guild is None), "Message has no server associated with it"
+	assert(message.guild is not None), "Message has no server associated with it"
 
 	is_valid_message = False
 
@@ -123,17 +123,18 @@ async def on_message(message: Message) -> None:
 
 	message_channel = cast(ServerTextChannel, message.channel)
 	assert(message_channel.category is not None)
-	if not message.guild.name == "Geheimlabor" or not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
+	if not message.guild.name == "Geheimlabor" \
+		or not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
 		return
-
+	
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		a: list[str] = []
 		for unvalid_response in unvalid_responses:
-				a.append(unvalid_response)
+			a.append(unvalid_response)
 		p: list[float] = get_normalized_probability_weights()
 		random_unvalid_response: str = choice(a=a, p=p)
 		if not random_unvalid_response.find("{user}") == -1:
-				random_unvalid_response = random_unvalid_response.format(user = message.author.name)
+			random_unvalid_response = random_unvalid_response.format(user=message.author.name)
 		await message.channel.send(random_unvalid_response)
 
 
@@ -153,7 +154,7 @@ async def in_any_guild(message: Message) -> bool:
 async def in_geheimlabor(message: Message) -> bool:
 	if message.content.startswith(PREFIX + "sende DM an"):
 		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-		assert(not message.channel.guild is None), "Message has no server associated with it"
+		assert(message.channel.guild is not None), "Message has no server associated with it"
 		await CMD.send_dm(user_msg, message.channel.guild)
 		return True
 
