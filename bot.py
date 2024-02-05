@@ -98,8 +98,7 @@ class CMD:
 		argument_count: int = 0
 		for argument in arguments:
 
-			if argument == "":
-				continue
+			argument = argument.rstrip()
 
 			if valid_arguments[argument_count](argument) == CONTINUE:
 				argument_count += 1
@@ -113,7 +112,7 @@ class CMD:
 
 
 	def get_user_id(self, argument: str) -> object:
-		argument = argument.rstrip()
+
 		if argument.casefold() == "alle":
 			self.to_all = True
 			return CONTINUE
