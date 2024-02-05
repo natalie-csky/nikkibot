@@ -140,12 +140,12 @@ class CMD:
 				user_id = int(argument)
 				break
 
-		maybe_user: User | None = client.get_user(user_id)
-		if maybe_user is None:
+		if not user_id:
 			self.command_error_message = argument
 			self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
 			return None
 
+		maybe_user: User | None = client.get_user(user_id)
 		self.user = maybe_user
 		return CONTINUE
 
