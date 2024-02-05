@@ -134,7 +134,7 @@ class CMD:
 				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
-			if user_id == int(argument):
+			if member.id == int(argument):
 				user_id = int(argument)
 				break
 
