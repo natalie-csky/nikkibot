@@ -19,6 +19,7 @@ with open(TOKEN_FILE, encoding="utf-8") as f:
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 client = discord.Client(intents=intents)
 
 is_valid_message: bool
