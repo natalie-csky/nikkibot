@@ -124,8 +124,8 @@ async def on_message(message: Message) -> None:
 
 	message_channel = cast(ServerTextChannel, message.channel)
 	assert(message_channel.category is not None)
-	if not message.guild.name == "Geheimlabor" \
-		or not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
+	if message.guild.id == 1011019396577243307 \
+		and not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
 		return
 
 	print("hi")
