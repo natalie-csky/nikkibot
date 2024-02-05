@@ -138,7 +138,6 @@ class CMD:
 				user_id = int(argument)
 				break
 
-		print("hey" + str(user_id))
 		if not user_id:
 			self.command_error_message = argument
 			self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
@@ -147,8 +146,6 @@ class CMD:
 		maybe_user: User | None = client.get_user(user_id)
 		self.user = cast(User | Member, maybe_user)
 		return CONTINUE
-
-		# return None
 
 
 @client.event
