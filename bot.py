@@ -1,28 +1,32 @@
-import discord
+from discord import Message, TextChannel, Thread, Guild, Intents, Client
 from typing import cast
-from numpy.random import choice
+# from numpy.random import choice
 
 # region members
 
-Message = discord.Message
-ServerTextChannel = discord.TextChannel | discord.Thread
-Server = discord.Guild
+# region type aliases
+ServerTextChannel = TextChannel | Thread
+Server = Guild
+# endregion
 
 PREFIX = "!Nikki, "
 BOT_NAME = "NikkiBot"
 
 CONTINUE = object()
 
+# region token setup
 TOKEN_FILE = "token"
 TOKEN: str
-
 with open(TOKEN_FILE, encoding="utf-8") as f:
 	TOKEN = f.read()
+# endregion
 
-intents = discord.Intents.default()
+# region client setup
+intents = Intents.default()
 intents.message_content = True
 intents.members = True
-client = discord.Client(intents=intents)
+client = Client(intents=intents)
+# endregion
 
 is_valid_message: bool
 
@@ -114,12 +118,12 @@ async def on_ready() -> None:
 async def on_message(message: Message) -> None:
 	assert(message.guild is not None), "Message has no server associated with it"
 
-	is_valid_message = False
+	# is_valid_message = False
 
 	if message.author == client.user:
 		return
 
-	is_valid_message = await in_any_guild(message)
+	# is_valid_message = await in_any_guild(message)
 
 	message_channel = cast(ServerTextChannel, message.channel)
 	assert(message_channel.category is not None)
@@ -127,15 +131,15 @@ async def on_message(message: Message) -> None:
 		or not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
 		return
 	
-	if message.content.startswith(PREFIX) and not is_valid_message:
-		a: list[str] = []
-		for unvalid_response in unvalid_responses:
-			a.append(unvalid_response)
-		p: list[float] = get_normalized_probability_weights()
-		random_unvalid_response: str = choice(a=a, p=p)
-		if not random_unvalid_response.find("{user}") == -1:
-			random_unvalid_response = random_unvalid_response.format(user=message.author.name)
-		await message.channel.send(random_unvalid_response)
+	# if message.content.startswith(PREFIX) and not is_valid_message:
+	# 	a: list[str] = []
+	# 	for unvalid_response in unvalid_responses:
+	# 		a.append(unvalid_response)
+	# 	p: list[float] = get_normalized_probability_weights()
+	# 	random_unvalid_response: str = choice(a=a, p=p)
+	# 	if not random_unvalid_response.find("{user}") == -1:
+	# 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
+	# 	await message.channel.send(random_unvalid_response)
 
 
 async def in_any_guild(message: Message) -> bool:
@@ -174,6 +178,9 @@ def get_normalized_probability_weights() -> list[float]:
 		normalized_weights.append(normalized_weight)
 
 	return normalized_weights
+
+
+
 
 
 client.run(TOKEN)
