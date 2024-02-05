@@ -127,8 +127,6 @@ class CMD:
 			if member.bot:
 				continue
 
-			user_id = member.id
-
 			try:
 				int(argument)
 			except ValueError:
