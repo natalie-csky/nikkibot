@@ -73,12 +73,12 @@ class CMD:
 
 
 	@staticmethod
-	async def send_dm(user_msg: str, channel: ServerTextChannel) -> None:
+	async def send_dm(user_msg: str, server: Server, channel: ServerTextChannel) -> None:
 
 		valid_arguments: list = [  # type: ignore
 			CMD.get_user_id
 		]
-		# CMD.server = server
+		CMD.server = server
 
 		arguments: list[str] = user_msg.split(" ")
 
@@ -155,7 +155,7 @@ async def on_message(message: Message) -> None:
 
 	if message.content.startswith(PREFIX + "sende DM an"):
 		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-		await CMD.send_dm(user_msg, cast(ServerTextChannel, message.channel))
+		await CMD.send_dm(user_msg, server, cast(ServerTextChannel, message.channel))
 
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
