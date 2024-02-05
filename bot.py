@@ -124,7 +124,7 @@ class CMD:
 				continue
 
 			user_id: int = member.id
-			print("argument: ", argument)
+			print("argument: " + argument)
 			print("before except")
 			try:
 				int(argument)
