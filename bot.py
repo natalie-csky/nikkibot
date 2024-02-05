@@ -107,7 +107,7 @@ class CMD:
 
 			match self.command_error:
 				case CMD.CommandError.USER_ID_NOT_INT:
-					await self.channel.send("user_id ist keine Nummer oder \'alle\'")
+					await self.channel.send("user_id " + self.command_error_message + " ist keine Nummer oder \'alle\'")
 				case CMD.CommandError.USER_ID_NOT_FOUND:
 					await self.channel.send("user_id " + self.command_error_message + " nicht gefunden")
 
@@ -131,6 +131,7 @@ class CMD:
 			try:
 				int(argument)
 			except ValueError:
+				self.command_error_message = str(user_id)
 				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
