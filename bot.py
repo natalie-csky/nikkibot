@@ -146,7 +146,7 @@ class CMD:
 			return None
 
 		maybe_user: User | None = client.get_user(user_id)
-		self.user = maybe_user
+		self.user = cast(User | Member, maybe_user)
 		return CONTINUE
 
 		# return None
