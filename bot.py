@@ -100,7 +100,6 @@ class CMD:
 
 			if argument == "":
 				continue
-			argument = argument.rstrip()
 
 			if valid_arguments[argument_count](argument) == CONTINUE:
 				argument_count += 1
@@ -111,6 +110,9 @@ class CMD:
 					await self.channel.send("user_id ist keine Nummer oder \'alle\'")
 				case CMD.CommandError.USER_ID_NOT_FOUND:
 					await self.channel.send("user_id " + self.command_error_message + " nicht gefunden")
+
+			if self.command_error is not CMD.CommandError.OK:
+				return
 
 
 	def get_user_id(self, argument: str) -> object:
