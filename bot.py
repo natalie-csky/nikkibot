@@ -124,7 +124,7 @@ class CMD:
 				continue
 
 			user_id: int = member.id
-
+			print("before except")
 			try:
 				int(argument)
 			except ValueError:
@@ -133,7 +133,7 @@ class CMD:
 
 			if not user_id == int(argument):
 				continue
-
+			print("after except")
 			maybe_user: User | None = client.get_user(user_id)
 			print("maybe user: " + str(maybe_user.id))
 			if maybe_user is None:
