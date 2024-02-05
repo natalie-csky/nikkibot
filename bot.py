@@ -121,12 +121,13 @@ class CMD:
 			self.to_all = True
 			return CONTINUE
 
+		user_id: int = 0
 		for member in self.server.members:
 
 			if member.bot:
 				continue
 
-			user_id: int = member.id
+			user_id = member.id
 
 			try:
 				int(argument)
@@ -135,19 +136,20 @@ class CMD:
 				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
-			if not user_id == int(argument):
-				continue
+			if user_id == int(argument):
+				user_id = int(argument)
+				break
 
-			maybe_user: User | None = client.get_user(user_id)
-			if maybe_user is None:
-				self.command_error_message = argument
-				self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
-				return None
+		maybe_user: User | None = client.get_user(user_id)
+		if maybe_user is None:
+			self.command_error_message = argument
+			self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
+			return None
 
-			self.user = maybe_user
-			return CONTINUE
+		self.user = maybe_user
+		return CONTINUE
 
-		return None
+		# return None
 
 
 @client.event
