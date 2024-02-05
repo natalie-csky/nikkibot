@@ -140,6 +140,7 @@ class CMD:
 				user_id = int(argument)
 				break
 
+		print("hey")
 		if not user_id:
 			self.command_error_message = argument
 			self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
