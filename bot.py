@@ -1,4 +1,4 @@
-from discord import Message, TextChannel, Thread, Guild, Intents, Client
+from discord import Message, TextChannel, Thread, Guild, Intents, Client, User
 from typing import cast
 # from numpy.random import choice
 
@@ -61,8 +61,9 @@ unvalid_responses: dict[str, int] = {
 
 class CMD:
 	to_all = False
-	argument_count: int = 0
 	server: Server
+	user: User | None
+	channel: ServerTextChannel
 
 	# @staticmethod
 	# async def say_neko_smile(channel: ServerTextChannel) -> None:
@@ -72,37 +73,47 @@ class CMD:
 	@staticmethod
 	async def send_dm(user_msg: str, server: Server) -> None:
 
+		valid_arguments: list = [  # type: ignore
+			CMD.get_user_id
+		]
 		CMD.server = server
 
 		arguments: list[str] = user_msg.split(" ")
-		CMD.argument_count = 0
 
 		CMD.to_all = False
 		user_id: int
 
+		argument_count: int = 0
 		for argument in arguments:
 
 			if argument == "":
 				continue
 
-			match CMD.argument_count:
-
-				case 0:
-					if CMD.check_first_argument(argument) == CONTINUE:
-						CMD.argument_count += 1
-						continue
+			if valid_arguments[argument_count](argument) == CONTINUE:
+				argument_count += 1
+				continue
 
 
 	@staticmethod
-	def check_first_argument(argument: str) -> object:
+	def get_user_id(argument: str) -> object:
+
 		if argument.casefold() == "alle":
 			CMD.to_all = True
 			return CONTINUE
 
 		for member in CMD.server.members:
+
 			if member.bot:
 				continue
+
 			user_id: int = member.id
+
+			if not user_id == int(argument):
+				continue
+
+			CMD.user = client.get_user(user_id)
+			return CONTINUE
+
 		return None
 
 
@@ -114,22 +125,28 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Message) -> None:
 	assert(message.guild is not None), "Message has no server associated with it"
+	server: Server = message.guild
+
 	if message.author == client.user:
 		return
 	# is_valid_message = False
 
-
-
 	# is_valid_message = await in_any_guild(message)
 
-	message_channel = cast(ServerTextChannel, message.channel)
-	assert(message_channel.category is not None)
-	if message.guild.id == 1011019396577243307 \
-		and not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
+	server_text_channel = cast(ServerTextChannel, message.channel)
+	assert(server_text_channel.category is not None)
+
+	# only doomertreffpunkt and only chefetage botausbeutung channel
+	# any other server, any channel
+	if server.id == 1011019396577243307 \
+		and not (server_text_channel.id == 1115389541696667879 and server_text_channel.category.id == 1113691175803695124):
 		return
 
-	print("hi")
-	
+	if message.content.startswith(PREFIX + "sende DM an"):
+		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
+		assert(message.channel.guild is not None), "Message has no server associated with it"
+		await CMD.send_dm(user_msg, message.channel.guild)
+
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
 	# 	for unvalid_response in unvalid_responses:
@@ -153,15 +170,6 @@ async def on_message(message: Message) -> None:
 #
 # 	return False
 #
-#
-# async def in_geheimlabor(message: Message) -> bool:
-# 	if message.content.startswith(PREFIX + "sende DM an"):
-# 		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-# 		assert(message.channel.guild is not None), "Message has no server associated with it"
-# 		await CMD.send_dm(user_msg, message.channel.guild)
-# 		return True
-#
-# 	return False
 
 
 def get_normalized_probability_weights() -> list[float]:
