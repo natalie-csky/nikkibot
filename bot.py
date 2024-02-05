@@ -64,10 +64,9 @@ class CMD:
 	argument_count: int = 0
 	server: Server
 
-
-	@staticmethod
-	async def say_neko_smile(channel: ServerTextChannel) -> None:
-		await channel.send(":3")
+	# @staticmethod
+	# async def say_neko_smile(channel: ServerTextChannel) -> None:
+	# 	await channel.send(":3")
 
 
 	@staticmethod
@@ -90,18 +89,16 @@ class CMD:
 
 				case 0:
 					if CMD.check_first_argument(argument) == CONTINUE:
+						CMD.argument_count += 1
 						continue
 
 
 	@staticmethod
 	def check_first_argument(argument: str) -> object:
 		if argument.casefold() == "alle":
-			to_all = True
-			CMD.argument_count += 1
+			CMD.to_all = True
 			return CONTINUE
 
-		# if CMD.server is None:
-		# 	return None
 		for member in CMD.server.members:
 			if member.bot:
 				continue
@@ -117,11 +114,11 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Message) -> None:
 	assert(message.guild is not None), "Message has no server associated with it"
-
-	# is_valid_message = False
-
 	if message.author == client.user:
 		return
+	# is_valid_message = False
+
+
 
 	# is_valid_message = await in_any_guild(message)
 
@@ -130,6 +127,8 @@ async def on_message(message: Message) -> None:
 	if not message.guild.name == "Geheimlabor" \
 		or not (message.channel.id == 1115389541696667879 and message_channel.category.id == 1113691175803695124):
 		return
+
+	print("hi")
 	
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
@@ -142,27 +141,27 @@ async def on_message(message: Message) -> None:
 	# 	await message.channel.send(random_unvalid_response)
 
 
-async def in_any_guild(message: Message) -> bool:
-
-	if message.content.casefold().startswith("good girl"):
-		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
-		return True
-
-	if message.content.find(":3") != -1:
-		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
-		return True
-
-	return False
-
-
-async def in_geheimlabor(message: Message) -> bool:
-	if message.content.startswith(PREFIX + "sende DM an"):
-		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-		assert(message.channel.guild is not None), "Message has no server associated with it"
-		await CMD.send_dm(user_msg, message.channel.guild)
-		return True
-
-	return False
+# async def in_any_guild(message: Message) -> bool:
+#
+# 	if message.content.casefold().startswith("good girl"):
+# 		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
+# 		return True
+#
+# 	if message.content.find(":3") != -1:
+# 		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
+# 		return True
+#
+# 	return False
+#
+#
+# async def in_geheimlabor(message: Message) -> bool:
+# 	if message.content.startswith(PREFIX + "sende DM an"):
+# 		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
+# 		assert(message.channel.guild is not None), "Message has no server associated with it"
+# 		await CMD.send_dm(user_msg, message.channel.guild)
+# 		return True
+#
+# 	return False
 
 
 def get_normalized_probability_weights() -> list[float]:
@@ -178,9 +177,6 @@ def get_normalized_probability_weights() -> list[float]:
 		normalized_weights.append(normalized_weight)
 
 	return normalized_weights
-
-
-
 
 
 client.run(TOKEN)
