@@ -97,8 +97,10 @@ class CMD:
 
 		argument_count: int = 0
 		for argument in arguments:
+
+			if argument == "":
+				continue
 			argument = argument.rstrip()
-			print(argument)
 
 			if valid_arguments[argument_count](argument) == CONTINUE:
 				argument_count += 1
