@@ -135,6 +135,7 @@ class CMD:
 				continue
 
 			maybe_user: User | None = client.get_user(user_id)
+			print("maybe user: " + str(maybe_user.id))
 			if maybe_user is None:
 				self.command_error_message = str(user_id)
 				self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
