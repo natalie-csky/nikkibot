@@ -151,9 +151,9 @@ async def on_message(message: Message) -> None:
 	assert(message.guild is not None), "Message has no server associated with it"
 
 	server_text_channel: ServerTextChannel
-	print(message.channel is not ServerTextChannel)
-	if message.channel is not ServerTextChannel:
-		return
+	# print(message.channel is not ServerTextChannel)
+	# if message.channel is not ServerTextChannel:
+	# 	return
 	server_text_channel = cast(ServerTextChannel, message.channel)
 
 	server: Server = message.guild
