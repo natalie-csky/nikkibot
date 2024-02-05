@@ -131,7 +131,7 @@ class CMD:
 			try:
 				int(argument)
 			except ValueError:
-				self.command_error_message = str(user_id)
+				self.command_error_message = argument
 				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
@@ -140,7 +140,7 @@ class CMD:
 
 			maybe_user: User | None = client.get_user(user_id)
 			if maybe_user is None:
-				self.command_error_message = str(user_id)
+				self.command_error_message = argument
 				self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
 				return None
 
