@@ -74,6 +74,7 @@ class CMD:
 
 	to_all = False
 	command_error = CommandError.OK
+	command_error_message: str
 
 	# @staticmethod
 	# async def say_neko_smile(channel: ServerTextChannel) -> None:
@@ -104,8 +105,11 @@ class CMD:
 				argument_count += 1
 				continue
 
-			if self.command_error == CMD.CommandError.USER_ID_NOT_INT:
-				await self.channel.send("user_id ist keine Nummer oder \'alle\'")
+			match self.command_error:
+				case CMD.CommandError.USER_ID_NOT_INT:
+					await self.channel.send("user_id ist keine Nummer oder \'alle\'")
+				case CMD.CommandError.USER_ID_NOT_FOUND:
+					await self.channel.send("user_id " + self.command_error_message + " nicht gefunden")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -132,6 +136,7 @@ class CMD:
 
 			maybe_user: User | None = client.get_user(user_id)
 			if maybe_user is None:
+				self.command_error_message = str(user_id)
 				self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
 				return None
 
