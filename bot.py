@@ -88,7 +88,7 @@ class CMD:
 	async def send_dm(self, user_message: str) -> None:
 
 		valid_arguments: list = [  # type: ignore
-			CMD.get_user_id
+			self.get_user_id
 		]
 
 		arguments: list[str] = user_message.split(" ")
