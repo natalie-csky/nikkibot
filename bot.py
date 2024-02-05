@@ -60,10 +60,12 @@ unvalid_responses: dict[str, int] = {
 # endregion
 
 class CMD:
-	to_all = False
 	server: Server
 	user: User | None
-	channel: ServerTextChannel
+	# channel: ServerTextChannel
+
+	to_all = False
+	user_id_not_int_error = False
 
 	# @staticmethod
 	# async def say_neko_smile(channel: ServerTextChannel) -> None:
@@ -71,12 +73,12 @@ class CMD:
 
 
 	@staticmethod
-	async def send_dm(user_msg: str, server: Server) -> None:
+	async def send_dm(user_msg: str, channel: ServerTextChannel) -> None:
 
 		valid_arguments: list = [  # type: ignore
 			CMD.get_user_id
 		]
-		CMD.server = server
+		# CMD.server = server
 
 		arguments: list[str] = user_msg.split(" ")
 
@@ -93,6 +95,9 @@ class CMD:
 				argument_count += 1
 				continue
 
+			if CMD.user_id_not_int_error:
+				await channel.send("user_id ist keine Nummer oder \'alle\'")
+
 
 	@staticmethod
 	def get_user_id(argument: str) -> object:
@@ -107,6 +112,12 @@ class CMD:
 				continue
 
 			user_id: int = member.id
+
+			try:
+				int(argument)
+			except ValueError:
+				CMD.user_id_not_int_error = True
+				return None
 
 			if not user_id == int(argument):
 				continue
@@ -144,8 +155,7 @@ async def on_message(message: Message) -> None:
 
 	if message.content.startswith(PREFIX + "sende DM an"):
 		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-		assert(message.channel.guild is not None), "Message has no server associated with it"
-		await CMD.send_dm(user_msg, message.channel.guild)
+		await CMD.send_dm(user_msg, cast(ServerTextChannel, message.channel))
 
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
