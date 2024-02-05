@@ -114,7 +114,7 @@ class CMD:
 			self.to_all = True
 			return CONTINUE
 
-		for member in CMD.server.members:
+		for member in self.server.members:
 
 			if member.bot:
 				continue
