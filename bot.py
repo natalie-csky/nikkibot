@@ -1,4 +1,7 @@
-from discord import Message, TextChannel, Thread, Guild, Intents, Client, User
+# noinspection PyUnresolvedReferences
+import discord
+from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member
+from enum import Enum
 from typing import cast
 # from numpy.random import choice
 
@@ -60,29 +63,35 @@ unvalid_responses: dict[str, int] = {
 # endregion
 
 class CMD:
+	class CommandError(Enum):
+		OK = 0,
+		USER_ID_NOT_INT = 1,
+		USER_ID_NOT_FOUND = 2
+
 	server: Server
-	user: User | None
-	# channel: ServerTextChannel
+	user: User | Member
+	channel: ServerTextChannel
 
 	to_all = False
-	user_id_not_int_error = False
+	command_error = CommandError.OK
 
 	# @staticmethod
 	# async def say_neko_smile(channel: ServerTextChannel) -> None:
 	# 	await channel.send(":3")
 
+	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
+		self.server = server
+		self.user = user
+		self.channel = channel
 
-	@staticmethod
-	async def send_dm(user_msg: str, server: Server, channel: ServerTextChannel) -> None:
+
+	async def send_dm(self, user_message: str) -> None:
 
 		valid_arguments: list = [  # type: ignore
 			CMD.get_user_id
 		]
-		CMD.server = server
 
-		arguments: list[str] = user_msg.split(" ")
-
-		CMD.to_all = False
+		arguments: list[str] = user_message.split(" ")
 		user_id: int
 
 		argument_count: int = 0
@@ -95,15 +104,14 @@ class CMD:
 				argument_count += 1
 				continue
 
-			if CMD.user_id_not_int_error:
-				await channel.send("user_id ist keine Nummer oder \'alle\'")
+			if self.command_error == CMD.CommandError.USER_ID_NOT_INT:
+				await self.channel.send("user_id ist keine Nummer oder \'alle\'")
 
 
-	@staticmethod
-	def get_user_id(argument: str) -> object:
+	def get_user_id(self, argument: str) -> object:
 
 		if argument.casefold() == "alle":
-			CMD.to_all = True
+			self.to_all = True
 			return CONTINUE
 
 		for member in CMD.server.members:
@@ -116,13 +124,18 @@ class CMD:
 			try:
 				int(argument)
 			except ValueError:
-				CMD.user_id_not_int_error = True
+				self.command_error = CMD.CommandError.USER_ID_NOT_INT
 				return None
 
 			if not user_id == int(argument):
 				continue
 
-			CMD.user = client.get_user(user_id)
+			maybe_user: User | None = client.get_user(user_id)
+			if maybe_user is None:
+				self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
+				return None
+
+			self.user = maybe_user
 			return CONTINUE
 
 		return None
@@ -136,10 +149,18 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Message) -> None:
 	assert(message.guild is not None), "Message has no server associated with it"
+
+	server_text_channel: ServerTextChannel
+	if message.channel is not ServerTextChannel:
+		return
+	server_text_channel = cast(ServerTextChannel, message.channel)
+
 	server: Server = message.guild
 
 	if message.author == client.user:
 		return
+
+	cmd = CMD(server, message.author, server_text_channel)
 	# is_valid_message = False
 
 	# is_valid_message = await in_any_guild(message)
@@ -154,8 +175,8 @@ async def on_message(message: Message) -> None:
 		return
 
 	if message.content.startswith(PREFIX + "sende DM an"):
-		user_msg = message.content.removeprefix(PREFIX + "sende DM an")
-		await CMD.send_dm(user_msg, server, cast(ServerTextChannel, message.channel))
+		user_message = message.content.removeprefix(PREFIX + "sende DM an")
+		await cmd.send_dm(user_message)
 
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
