@@ -43,10 +43,10 @@ unvalid_responses: dict[str, int] = {
     "Bitte was?": 17,
     "Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 1,
     "Nah dran, glaub ich. Versuch nochmal.": 15,
-    "Wie war das? Ich versteh dich nicht so gut.": 7,
+    "Wie war das? Ich versteh dich nicht so gut.": 6,
     "error (value < 0): user iq too low": 2,
     "{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 2,
-    "Frag doch einfach nochmal.": 4,
+    "Frag doch einfach nochmal.": 6,
     "Du schreibst nämlich mit h, oder?": 2
 }
 
@@ -82,6 +82,9 @@ class CMD:
                         to_all = True
                         argument_count += 1
                         continue
+
+                    for member in server.members:
+                        print(member)
 
 
 @client.event
