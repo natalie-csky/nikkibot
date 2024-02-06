@@ -126,7 +126,7 @@ class Command:
 		else:
 			if self.to_all:
 				await self.channel.send(
-					"Sicher, dass du folgende Nachricht an ALLE User in diesem Server per DM senden willst? \n\n" +
+					"Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst? \n\n" +
 					message.content
 				)
 			else:
@@ -138,8 +138,8 @@ class Command:
 				)
 			await self.channel.send(
 				"""
-Sicher, dass du folgende Nachricht an {user} per DM senden willst?
-Nachricht:
+Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
+### Nachricht:
 {message}
 				""".format(user=self.to_user, message=message.content)
 			)
