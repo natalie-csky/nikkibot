@@ -210,6 +210,7 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
+	await client.get_guild(880768960402948106).get_channel(1202218735361065100).send("Ich nehme das als ein Ja an...")
 
 
 @client.event
