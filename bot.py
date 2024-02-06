@@ -230,6 +230,8 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
+	if message.channel is discord.DMChannel:
+		print("hello")
 	if message.guild is None:
 		return
 
@@ -261,15 +263,18 @@ async def on_message(message: Message) -> None:
 			is_valid_message = True
 
 	if message.content.startswith(PREFIX) and not is_valid_message:
-		a: list[str] = []
-		for unvalid_response in unvalid_responses:
-			a.append(unvalid_response)
-		p: list[float] = get_normalized_probability_weights()
-		random_unvalid_response: str = choice(a=a, p=p)
-		if not random_unvalid_response.find("{user}") == -1:
-			random_unvalid_response = random_unvalid_response.format(user=message.author.name)
-		await message.channel.send(random_unvalid_response)
+		await send_wat(message)
 
+
+async def send_wat(message: Message) -> None:
+	a: list[str] = []
+	for unvalid_response in unvalid_responses:
+		a.append(unvalid_response)
+	p: list[float] = get_normalized_probability_weights()
+	random_unvalid_response: str = choice(a=a, p=p)
+	if not random_unvalid_response.find("{user}") == -1:
+		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
+	await message.channel.send(random_unvalid_response)
 
 # async def in_any_guild(message: Message) -> bool:
 #
