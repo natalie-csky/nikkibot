@@ -243,7 +243,7 @@ async def on_message(message: Message) -> None:
 	if isinstance(message.channel, discord.DMChannel):
 		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
 		doomer_server = await client.fetch_guild(DOOMERTREFFPUNKT_ID)
-		bot_channel = cast(TextChannel, doomer_server.fetch_channel(BOTAUSBEUTUNG_ID))
+		bot_channel = cast(TextChannel, await doomer_server.fetch_channel(BOTAUSBEUTUNG_ID))
 
 		now = datetime.now()
 		ts = datetime.timestamp(now)
