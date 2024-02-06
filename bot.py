@@ -121,7 +121,15 @@ class Command:
 
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
-		message = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
+		direct_message = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
+		if direct_message is None:
+			return
+
+		message = await self.wait_for_reply(15, Command.ReplyCondition.IS_CONFIRMED)
+		if message is None:
+			return
+
+		await self.to_user.send(":3")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -210,7 +218,6 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
-	await client.get_guild(880768960402948106).get_channel(1202218735361065100).send("Ich nehme das als ein Ja an...")
 
 
 @client.event
