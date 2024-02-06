@@ -103,11 +103,11 @@ class Command:
 
 			if user_argument == "":
 				continue
-
+			print("hey1")
 			if self.get_user_id(user_argument) == Command.Error.OK:
-				print("hey")
+				print("hey2")
 				break
-
+			print("hey3")
 			error_mesage: str = ""
 			match self.command_error:
 				case Command.Error.OK:
