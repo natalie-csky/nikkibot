@@ -98,7 +98,7 @@ class Command:
 			return
 
 		user_arguments: list[str] = user_message.split(" ")
-
+		print(user_arguments)
 		if not len(user_arguments):
 			print("hey")
 
