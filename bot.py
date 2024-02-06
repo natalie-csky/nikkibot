@@ -100,45 +100,28 @@ class Command:
 
 		user_arguments: list[str] = user_message.split(" ")
 
-		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
-			argument_index: int = 0
-			for user_argument in user_arguments:
-				argument_index += 1
+		for user_argument in user_arguments:
 
-				if user_argument == "":
+			if user_argument == "":
+				continue
+
+			if self.get_user_id(user_argument) == Command.Error.OK:
+				break
+
+			error_mesage: str = ""
+			match self.command_error:
+				case Command.Error.OK:
 					continue
-
-				if expected_argument(self, user_argument) == Command.Error.OK:
-					break
-
-				error_mesage: str = ""
-				match self.command_error:
-					case Command.Error.OK:
-						continue
-					case Command.Error.USER_ID_NOT_INT:
-						error_mesage = "User ID \'" + self.command_error_message + "\' ist keine Nummer oder \'alle\'."
-					case Command.Error.USER_ID_NOT_FOUND:
-						error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
-				await self.channel.send(error_mesage)
-				return
+				case Command.Error.USER_ID_NOT_INT:
+					error_mesage = "User ID \'" + self.command_error_message + "\' ist keine Nummer oder \'alle\'."
+				case Command.Error.USER_ID_NOT_FOUND:
+					error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
+			await self.channel.send(error_mesage)
+			return
 
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
 		message = await self.get_message()
-		if message is not None:
-			print(message.content)
-
-		# try:
-		# 	message = await client.wait_for("message", check=self.check, timeout=10)
-		# except TimeoutError:
-		# 	await self.channel.send(
-		# 		self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
-		# 	)
-		# else:
-		# 	if message.content == "Ja":
-		# 		await self.channel.send("Nachricht wird versendet...")
-		# 	else:
-		# 		await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -227,38 +210,6 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 	async def get_message(self) -> Message | None:
 		message: Message | None = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
 		return message
-	# 	try:
-	# 		message: Message = await client.wait_for("message", check=self.check, timeout=300)
-	# 	except TimeoutError:
-	# 		await self.channel.send(
-	# 			self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
-	# 		)
-	# 		return
-	# 	else:
-	# 		if self.to_all:
-	# 			await self.channel.send("""
-	# Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
-	# ### Nachricht:
-	# {message}
-	# """.format(message=message.content)
-	# 			)
-	# 		else:
-	# 			await self.channel.send("""
-	# Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
-	# ### Nachricht:
-	# {message}
-	# """.format(user=self.to_user, message=message.content)
-	# 			)
-
-
-Command.SEND_DM_EXPECTED_ARGUMENTS = [
-	Command.get_user_id
-]
-
-
-# async def timeout(time: int, channel: ServerTextChannel) -> None:
-# 	await asyncio.sleep(time)
-# 	await channel.send("Timeout: Befehl abgebrochen")
 
 
 @client.event
