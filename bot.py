@@ -89,7 +89,6 @@ class Command:
 	async def send_dm(self, user_message: str) -> None:
 		user_arguments: list[str] = user_message.split(" ")
 
-		print(Command.SEND_DM_EXPECTED_ARGUMENTS)
 		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
 			argument_index: int = 0
 			for user_argument in user_arguments:
@@ -111,6 +110,7 @@ class Command:
 						error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
 				await self.channel.send(error_mesage)
 				return
+		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -163,12 +163,9 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
-	assert(message.guild is not None), "Message has no server associated with it"
+	assert(message.guild is not None)
 
 	server_text_channel: ServerTextChannel
-	# print(message.channel is not ServerTextChannel)
-	# if message.channel is not ServerTextChannel:
-	# 	return
 	server_text_channel = cast(ServerTextChannel, message.channel)
 
 	server: Server = message.guild
