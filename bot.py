@@ -241,14 +241,15 @@ async def on_message(message: Message) -> None:
 		now = datetime.now()
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
-		print(client.get_channel(NIKKI_DM_ID))
-		await client.get_channel(NIKKI_DM_ID).send(
-			time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
-		)
+		# print(client.get_channel(NIKKI_DM_ID))
+		# await client.get_channel(NIKKI_DM_ID).send(
+		# 	time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
+		# )
+		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 		if not message.content == "":
-			await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(message.content)
+			print(message.content)
 		for sticker in message.stickers:
-			await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(sticker.url)
+			print(sticker.url)
 	if message.guild is None:
 		return
 
