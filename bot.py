@@ -105,6 +105,7 @@ class Command:
 				continue
 
 			if self.get_user_id(user_argument) == Command.Error.OK:
+				print("hey")
 				break
 
 			error_mesage: str = ""
@@ -157,7 +158,6 @@ class Command:
 				user_id = int(argument)
 				maybe_user: User | None = client.get_user(user_id)
 				self.to_user = cast(User | Member, maybe_user)
-				print("hey")
 				return Command.Error.OK
 
 		self.command_error_message = argument
