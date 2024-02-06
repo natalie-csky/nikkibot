@@ -125,7 +125,8 @@ class Command:
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
 		message = await self.get_message()
-		print(message.content)
+		if message is not None:
+			print(message.content)
 
 		# try:
 		# 	message = await client.wait_for("message", check=self.check, timeout=10)
@@ -196,10 +197,10 @@ class Command:
 						await self.channel.send("Nachricht wird versendet...")
 					case Command.ReplyCondition.IS_SEND_TO_ALL:
 						await self.channel.send("""
-							Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
-							### Nachricht:
-							{message}
-							""".format(message=message.content)
+Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
+### Nachricht:
+{message}
+""".format(message=message.content)
 						)
 			else:
 				match condition:
@@ -207,10 +208,10 @@ class Command:
 						await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
 					case Command.ReplyCondition.IS_SEND_TO_ALL:
 						await self.channel.send("""
-							Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
-							### Nachricht:
-							{message}
-							""".format(user=self.to_user, message=message.content)
+Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
+### Nachricht:
+{message}
+""".format(user=self.to_user, message=message.content)
 						)
 		return message
 
