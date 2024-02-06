@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member
-from enum import Enum
+from enum import Enum, auto
 from typing import cast
 # from numpy.random import choice
 
@@ -14,8 +14,6 @@ Server = Guild
 
 PREFIX = "!Nikki, "
 BOT_NAME = "NikkiBot"
-
-CONTINUE = object()
 
 # region token setup
 TOKEN_FILE = "token"
@@ -62,23 +60,22 @@ unvalid_responses: dict[str, int] = {
 
 # endregion
 
-class CMD:
-	class CommandError(Enum):
-		OK = 0,
-		USER_ID_NOT_INT = 1,
-		USER_ID_NOT_FOUND = 2
+class Command:
+	class Error(Enum):
+		OK = auto()
+		FAILED = auto()
+		USER_ID_NOT_INT = auto()
+		USER_ID_NOT_FOUND = auto()
+
 
 	server: Server
 	user: User | Member
 	channel: ServerTextChannel
 
 	to_all = False
-	command_error = CommandError.OK
+	command_error = Error.OK
 	command_error_message: str
 
-	# @staticmethod
-	# async def say_neko_smile(channel: ServerTextChannel) -> None:
-	# 	await channel.send(":3")
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
 		self.server = server
@@ -87,31 +84,33 @@ class CMD:
 
 
 	async def send_dm(self, user_message: str) -> None:
+		user_arguments: list[str] = user_message.split(" ")
 
-		valid_arguments: list = [  # type: ignore
-			self.get_user_id
+		expected_arguments: list = [  # type: ignore
+			self.get_user_id,
 		]
 
-		arguments: list[str] = user_message.split(" ")
-		user_id: int
+		for expected_argument in expected_arguments:
 
-		argument_count: int = 0
-		for argument in arguments:
+			argument_index: int = -1
+			for user_argument in user_arguments:
+				argument_index += 1
 
-			if argument == "":
-				continue
+				if user_argument == "":
+					continue
 
-			if valid_arguments[argument_count](argument) == CONTINUE:
-				argument_count += 1
-				continue
+				if expected_argument(user_argument) == Command.Error.OK:
+					break
 
-			match self.command_error:
-				case CMD.CommandError.USER_ID_NOT_INT:
-					await self.channel.send("user_id \'" + self.command_error_message + "\' ist keine Nummer oder \'alle\'")
-				case CMD.CommandError.USER_ID_NOT_FOUND:
-					await self.channel.send("user_id \'" + self.command_error_message + "\' nicht gefunden")
-
-			if self.command_error is not CMD.CommandError.OK:
+				error_mesage: str = ""
+				match self.command_error:
+					case Command.Error.OK:
+						continue
+					case Command.Error.USER_ID_NOT_INT:
+						error_mesage = "User ID \'" + self.command_error_message + "\' ist keine Nummer oder \'alle\'."
+					case Command.Error.USER_ID_NOT_FOUND:
+						error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
+				await self.channel.send(error_mesage)
 				return
 
 
@@ -119,33 +118,35 @@ class CMD:
 
 		if argument.casefold() == "alle":
 			self.to_all = True
-			return CONTINUE
+			return Command.Error.OK
 
-		user_id: int = 0
 		for member in self.server.members:
 
 			if member.bot:
 				continue
 
-			try:
-				int(argument)
-			except ValueError:
-				self.command_error_message = argument
-				self.command_error = CMD.CommandError.USER_ID_NOT_INT
-				return None
+			if not self.assert_user_id_is_int(argument):
+				return Command.Error.USER_ID_NOT_INT
 
 			if member.id == int(argument):
 				user_id = int(argument)
-				break
+				maybe_user: User | None = client.get_user(user_id)
+				self.user = cast(User | Member, maybe_user)
+				return Command.Error.OK
 
-		if not user_id:
-			self.command_error_message = argument
-			self.command_error = CMD.CommandError.USER_ID_NOT_FOUND
-			return None
+		self.command_error_message = argument
+		self.command_error = Command.Error.USER_ID_NOT_FOUND
+		return Command.Error.USER_ID_NOT_FOUND
 
-		maybe_user: User | None = client.get_user(user_id)
-		self.user = cast(User | Member, maybe_user)
-		return CONTINUE
+
+	def assert_user_id_is_int(self, value: str) -> bool:
+		try:
+			int(value)
+		except ValueError:
+			self.command_error_message = value
+			self.command_error = Command.Error.USER_ID_NOT_INT
+			return False
+		return True
 
 
 @client.event
@@ -168,7 +169,7 @@ async def on_message(message: Message) -> None:
 	if message.author == client.user:
 		return
 
-	cmd = CMD(server, message.author, server_text_channel)
+	command = Command(server, message.author, server_text_channel)
 	# is_valid_message = False
 
 	# is_valid_message = await in_any_guild(message)
@@ -179,12 +180,13 @@ async def on_message(message: Message) -> None:
 	# only doomertreffpunkt and only chefetage botausbeutung channel
 	# any other server, any channel
 	if server.id == 1011019396577243307 \
-		and not (server_text_channel.id == 1115389541696667879 and server_text_channel.category.id == 1113691175803695124):
+		and not \
+		(server_text_channel.id == 1115389541696667879 and server_text_channel.category.id == 1113691175803695124):
 		return
 
 	if message.content.startswith(PREFIX + "sende DM an"):
 		user_message = message.content.removeprefix(PREFIX + "sende DM an")
-		await cmd.send_dm(user_message)
+		await command.send_dm(user_message)
 
 	# if message.content.startswith(PREFIX) and not is_valid_message:
 	# 	a: list[str] = []
