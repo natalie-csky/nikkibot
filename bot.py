@@ -282,7 +282,7 @@ async def relay_bot_dm(message: Message) -> None:
 		time = datetime.fromtimestamp(ts)
 
 		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-		await bot_channel.send("DM to bot by: " + message.author.name)
+		await bot_channel.send("DM to bot by: **" + message.author.name + "**")
 
 		if not message.content == "":
 			await nikki_channel.send(message.content)
