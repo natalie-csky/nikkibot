@@ -99,15 +99,17 @@ class Command:
 
 		user_arguments: list[str] = user_message.split(" ")
 
+		if not len(user_arguments):
+			print("hey")
+
 		for user_argument in user_arguments:
 
 			if user_argument == "":
 				continue
-			print("hey1")
+
 			if self.get_user_id(user_argument) == Command.Error.OK:
-				print("hey2")
 				break
-			print("hey3")
+
 			error_mesage: str = ""
 			match self.command_error:
 				case Command.Error.OK:
