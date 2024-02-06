@@ -1,6 +1,6 @@
 # noinspection PyUnresolvedReferences
 import discord
-from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member
+from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 from typing import cast
 # from numpy.random import choice
@@ -67,6 +67,10 @@ class Command:
 		USER_ID_NOT_INT = auto()
 		USER_ID_NOT_FOUND = auto()
 
+	class ReplyCondition(Enum):
+		IS_CONFIRMED = auto()
+		IS_SEND_TO_ALL = auto()
+
 	SEND_DM_EXPECTED_ARGUMENTS: list  # type: ignore
 
 	server: Server
@@ -88,6 +92,12 @@ class Command:
 
 
 	async def send_dm(self, user_message: str) -> None:
+
+		user_permission: Permissions = self.channel.permissions_for(cast(Member | Role, self.from_user))
+		if not user_permission.mention_everyone:
+			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
+			return
+
 		user_arguments: list[str] = user_message.split(" ")
 
 		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
@@ -114,35 +124,20 @@ class Command:
 
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
-		def check(reply: Message) -> bool:
-			return reply.author == self.from_user
+		message = await self.get_message()
+		print(message.content)
 
-		try:
-			message: Message = await client.wait_for("message", check=check, timeout=20)
-		except TimeoutError:
-			await self.channel.send(
-				self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
-			)
-		else:
-			if self.to_all:
-				await self.channel.send(
-					"Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst? \n\n" +
-					message.content
-				)
-			else:
-				await self.channel.send(
-					"Sicher, dass du folgende Nachricht an {user} per DM senden willst? \n\n".format(
-						user=self.to_user
-					) +
-					message.content
-				)
-			await self.channel.send(
-				"""
-Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
-### Nachricht:
-{message}
-				""".format(user=self.to_user, message=message.content)
-			)
+		# try:
+		# 	message = await client.wait_for("message", check=self.check, timeout=10)
+		# except TimeoutError:
+		# 	await self.channel.send(
+		# 		self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
+		# 	)
+		# else:
+		# 	if message.content == "Ja":
+		# 		await self.channel.send("Nachricht wird versendet...")
+		# 	else:
+		# 		await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -170,9 +165,6 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 		return Command.Error.USER_ID_NOT_FOUND
 
 
-	def get_message(self, argument: str) -> object:
-		pass
-
 	def assert_user_id_is_int(self, value: str) -> bool:
 		try:
 			int(value)
@@ -181,6 +173,81 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 			self.command_error = Command.Error.USER_ID_NOT_INT
 			return False
 		return True
+
+
+	def is_reply_original_author(self, reply: Message) -> bool:
+		return reply.author == self.from_user
+
+
+	async def wait_for_reply(self, timeout: int, condition: ReplyCondition) -> Message | None:
+		try:
+			message = await client.wait_for("message", check=self.is_reply_original_author, timeout=timeout)
+		except TimeoutError:
+			await self.channel.send(
+				self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
+			)
+			return None
+
+		# TODO wat is dis
+		else:
+			if Command.check_condition(self, message.content, condition):
+				match condition:
+					case Command.ReplyCondition.IS_CONFIRMED:
+						await self.channel.send("Nachricht wird versendet...")
+					case Command.ReplyCondition.IS_SEND_TO_ALL:
+						await self.channel.send("""
+							Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
+							### Nachricht:
+							{message}
+							""".format(message=message.content)
+						)
+			else:
+				match condition:
+					case Command.ReplyCondition.IS_CONFIRMED:
+						await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
+					case Command.ReplyCondition.IS_SEND_TO_ALL:
+						await self.channel.send("""
+							Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
+							### Nachricht:
+							{message}
+							""".format(user=self.to_user, message=message.content)
+						)
+		return message
+
+
+	def check_condition(self, message: str, condition: ReplyCondition) -> bool:
+		match condition:
+			case Command.ReplyCondition.IS_CONFIRMED:
+				return message == "Ja"
+			case Command.ReplyCondition.IS_SEND_TO_ALL:
+				return self.to_all
+
+
+	async def get_message(self) -> Message | None:
+		message: Message | None = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
+		return message
+	# 	try:
+	# 		message: Message = await client.wait_for("message", check=self.check, timeout=300)
+	# 	except TimeoutError:
+	# 		await self.channel.send(
+	# 			self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
+	# 		)
+	# 		return
+	# 	else:
+	# 		if self.to_all:
+	# 			await self.channel.send("""
+	# Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
+	# ### Nachricht:
+	# {message}
+	# """.format(message=message.content)
+	# 			)
+	# 		else:
+	# 			await self.channel.send("""
+	# Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
+	# ### Nachricht:
+	# {message}
+	# """.format(user=self.to_user, message=message.content)
+	# 			)
 
 
 Command.SEND_DM_EXPECTED_ARGUMENTS = [
