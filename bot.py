@@ -258,7 +258,7 @@ async def on_message(message: Message) -> None:
 		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
 		if not user_message == "":
 			await command.send_dm(user_message)
-		is_valid_message = True
+			is_valid_message = True
 
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		a: list[str] = []
