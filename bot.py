@@ -231,7 +231,8 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Message) -> None:
 	if isinstance(message.channel, discord.DMChannel):
-		print(message.author.name)
+		print("private message from: " + message.author.name)
+		print(message.content)
 	if message.guild is None:
 		return
 
