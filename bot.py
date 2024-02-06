@@ -121,7 +121,7 @@ class Command:
 
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
-		message = await self.get_message()
+		message = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -205,11 +205,6 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 				return message == "Ja"
 			case Command.ReplyCondition.IS_SEND_TO_ALL:
 				return self.to_all
-
-
-	async def get_message(self) -> Message | None:
-		message: Message | None = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
-		return message
 
 
 @client.event
