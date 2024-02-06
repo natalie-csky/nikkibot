@@ -98,7 +98,7 @@ class Command:
 				if user_argument == "":
 					continue
 
-				if expected_argument(user_argument) == Command.Error.OK:
+				if expected_argument(self, user_argument) == Command.Error.OK:
 					break
 
 				error_mesage: str = ""
@@ -191,8 +191,8 @@ async def on_message(message: Message) -> None:
 		(server_text_channel.id == 1115389541696667879 and server_text_channel.category.id == 1113691175803695124):
 		return
 
-	if message.content.startswith(PREFIX + "sende DM an"):
-		user_message = message.content.removeprefix(PREFIX + "sende DM an")
+	if message.content.casefold().startswith(PREFIX + "sende dm an"):
+		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
 		await command.send_dm(user_message)
 
 	# if message.content.startswith(PREFIX) and not is_valid_message:
