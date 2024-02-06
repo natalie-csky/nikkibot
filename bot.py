@@ -16,6 +16,9 @@ Server = Guild
 PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
+NIKKI_DM_ID = 1204362891289960468
+
+
 # region token setup
 TOKEN_FILE = "token"
 TOKEN: str
@@ -231,15 +234,20 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
+	if message.author == client.user:
+		return
+
 	if isinstance(message.channel, discord.DMChannel):
 		now = datetime.now()
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
-		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+		await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(
+			time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
+		)
 		if not message.content == "":
-			print(message.content)
+			await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(message.content)
 		for sticker in message.stickers:
-			print(sticker.url)
+			await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(sticker.url)
 	if message.guild is None:
 		return
 
@@ -247,9 +255,6 @@ async def on_message(message: Message) -> None:
 	server_text_channel = cast(ServerTextChannel, message.channel)
 
 	server: Server = message.guild
-
-	if message.author == client.user:
-		return
 
 	command = Command(server, message.author, server_text_channel)
 	is_valid_message = False
