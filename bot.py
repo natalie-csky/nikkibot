@@ -155,7 +155,7 @@ Command.SEND_DM_EXPECTED_ARGUMENTS = [
 ]
 
 print(Command.SEND_DM_EXPECTED_ARGUMENTS)
-
+print("hye")
 
 @client.event
 async def on_ready() -> None:
