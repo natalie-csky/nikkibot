@@ -130,11 +130,13 @@ class Command:
 		if message is None:
 			return
 
-		await self.to_user.send(direct_message.content)
-
 		if self.to_all:
+			for member in self.server.members:
+				# await member.send(direct_message.content)
+				print(member)
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
+			await self.to_user.send(direct_message.content)
 			await self.channel.send("Nachricht wurde versendet :3")
 
 
