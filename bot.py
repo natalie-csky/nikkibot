@@ -1,3 +1,4 @@
+from datetime import datetime
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
@@ -231,7 +232,11 @@ async def on_ready() -> None:
 @client.event
 async def on_message(message: Message) -> None:
 	if isinstance(message.channel, discord.DMChannel):
-		print("private message from: " + message.author.name)
+		now = datetime.now()
+		ts = datetime.timestamp(now)
+		time = datetime.fromtimestamp(ts)
+		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+
 		print(message.content)
 	if message.guild is None:
 		return
