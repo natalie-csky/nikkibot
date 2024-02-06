@@ -71,6 +71,7 @@ class Command:
 		IS_CONFIRMED = auto()
 		IS_SEND_TO_ALL = auto()
 
+	# region members
 	SEND_DM_EXPECTED_ARGUMENTS: list  # type: ignore
 
 	server: Server
@@ -83,7 +84,7 @@ class Command:
 	# send_dm
 	to_all = False
 	to_user: User | Member
-
+	# endregion
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
 		self.server = server
@@ -130,6 +131,11 @@ class Command:
 			return
 
 		await self.to_user.send(direct_message.content)
+
+		if self.to_all:
+			await self.channel.send("Nachrichten wurden versendet :3")
+		else:
+			await self.channel.send("Nachricht wurde versendet :3")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -185,7 +191,7 @@ class Command:
 			if Command.check_condition(self, message.content, condition):
 				match condition:
 					case Command.ReplyCondition.IS_CONFIRMED:
-						await self.channel.send("Nachricht wird versendet...")
+						pass
 					case Command.ReplyCondition.IS_SEND_TO_ALL:
 						await self.channel.send("""
 Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
