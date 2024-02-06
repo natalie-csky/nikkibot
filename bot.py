@@ -93,7 +93,7 @@ class Command:
 
 
 	async def send_dm(self, user_message: str) -> None:
-		print("to all: " + str(self.to_all))
+
 		user_permission: Permissions = self.channel.permissions_for(cast(Member | Role, self.from_user))
 		if not user_permission.mention_everyone:
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
@@ -120,6 +120,7 @@ class Command:
 			await self.channel.send(error_mesage)
 			return
 
+		print("to all: " + str(self.to_all))
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
 		direct_message = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
