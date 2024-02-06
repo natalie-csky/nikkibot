@@ -17,6 +17,9 @@ PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
 NIKKI_DM_ID = 1204362891289960468
+DOOMERTREFFPUNKT_ID = 1011019396577243307
+BOTAUSBEUTUNG_ID = 1115389541696667879
+CHEFETAGE_ID = 1113691175803695124
 
 
 # region token setup
@@ -239,17 +242,22 @@ async def on_message(message: Message) -> None:
 
 	if isinstance(message.channel, discord.DMChannel):
 		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
+		doomer_server = await client.fetch_guild(DOOMERTREFFPUNKT_ID)
+		bot_channel = cast(TextChannel, doomer_server.get_channel(BOTAUSBEUTUNG_ID))
 
 		now = datetime.now()
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
 
 		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+		await bot_channel.send("DM to bot by: " + message.author.name)
 
 		if not message.content == "":
 			await nikki_channel.send(message.content)
+			await bot_channel.send(message.content)
 		for sticker in message.stickers:
 			await nikki_channel.send(sticker.url)
+			await bot_channel.send(sticker.url)
 
 	if message.guild is None:
 		return
@@ -265,11 +273,9 @@ async def on_message(message: Message) -> None:
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert(server_text_channel.category is not None)
 
-	# only doomertreffpunkt and only chefetage botausbeutung channel
-	# any other server, any channel
-	if server.id == 1011019396577243307 \
+	if server.id == DOOMERTREFFPUNKT_ID \
 		and not \
-		(server_text_channel.id == 1115389541696667879 and server_text_channel.category.id == 1113691175803695124):
+		(server_text_channel.id == BOTAUSBEUTUNG_ID and server_text_channel.category.id == CHEFETAGE_ID):
 		return
 
 	if message.content.casefold().startswith(PREFIX + "sende dm an"):
