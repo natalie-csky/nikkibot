@@ -1,4 +1,3 @@
-import asyncio
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member
@@ -111,8 +110,18 @@ class Command:
 						error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
 				await self.channel.send(error_mesage)
 				return
+
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
-		await timeout(10, self.channel)
+
+		def check(reply: Message) -> bool:
+			return reply.author == self.user
+
+		try:
+			message: Message = await client.wait_for("message", check=check, timeout=10)
+		except TimeoutError:
+			await self.channel.send("Timeout: Befehl abgebrochen.")
+		else:
+			await self.channel.send("Okay. Sicher, dass du folgende Nachricht an." + message.content)
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -158,9 +167,9 @@ Command.SEND_DM_EXPECTED_ARGUMENTS = [
 ]
 
 
-async def timeout(time: int, channel: ServerTextChannel) -> None:
-	await asyncio.sleep(time)
-	await channel.send("Timeout: Befehl abgebrochen")
+# async def timeout(time: int, channel: ServerTextChannel) -> None:
+# 	await asyncio.sleep(time)
+# 	await channel.send("Timeout: Befehl abgebrochen")
 
 
 @client.event
