@@ -245,7 +245,8 @@ async def on_message(message: Message) -> None:
 		# await client.get_channel(NIKKI_DM_ID).send(
 		# 	time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
 		# )
-		await client.fetch_channel(NIKKI_DM_ID).send("test123")
+		nikki_channel = await client.fetch_channel(NIKKI_DM_ID)
+		await nikki_channel.send("test123")
 		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 		if not message.content == "":
 			print(message.content)
