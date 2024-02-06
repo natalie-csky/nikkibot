@@ -129,7 +129,7 @@ class Command:
 		if message is None:
 			return
 
-		await self.to_user.send(":3")
+		await self.to_user.send(direct_message.content)
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -222,7 +222,8 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
-	assert(message.guild is not None)
+	if message.guild is None:
+		return
 
 	server_text_channel: ServerTextChannel
 	server_text_channel = cast(ServerTextChannel, message.channel)
