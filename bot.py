@@ -117,11 +117,11 @@ class Command:
 			return reply.author == self.user
 
 		try:
-			message: Message = await client.wait_for("message", check=check, timeout=10)
+			message: Message = await client.wait_for("message", check=check, timeout=300)
 		except TimeoutError:
 			await self.channel.send("Timeout: Befehl abgebrochen.")
 		else:
-			await self.channel.send("Okay. Sicher, dass du folgende Nachricht an." + message.content)
+			await self.channel.send("Sicher, dass du folgende Nachricht an user senden willst? \n\n" + message.content)
 
 
 	def get_user_id(self, argument: str) -> object:
