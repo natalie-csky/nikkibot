@@ -155,6 +155,7 @@ Command.SEND_DM_EXPECTED_ARGUMENTS = [
 	Command.get_user_id
 ]
 
+
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
