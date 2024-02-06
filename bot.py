@@ -240,24 +240,7 @@ async def on_message(message: Message) -> None:
 	if message.author == client.user:
 		return
 
-	if isinstance(message.channel, discord.DMChannel):
-		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
-		doomer_server = await client.fetch_guild(DOOMERTREFFPUNKT_ID)
-		bot_channel = cast(TextChannel, await doomer_server.fetch_channel(BOTAUSBEUTUNG_ID))
-
-		now = datetime.now()
-		ts = datetime.timestamp(now)
-		time = datetime.fromtimestamp(ts)
-
-		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-		await bot_channel.send("DM to bot by: " + message.author.name)
-
-		if not message.content == "":
-			await nikki_channel.send(message.content)
-			await bot_channel.send(message.content)
-		for sticker in message.stickers:
-			await nikki_channel.send(sticker.url)
-			await bot_channel.send(sticker.url)
+	await relay_bot_dm(message)
 
 	if message.guild is None:
 		return
@@ -288,6 +271,27 @@ async def on_message(message: Message) -> None:
 		await send_wat(message)
 
 
+async def relay_bot_dm(message: Message) -> None:
+	if isinstance(message.channel, discord.DMChannel):
+		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
+		doomer_server = await client.fetch_guild(DOOMERTREFFPUNKT_ID)
+		bot_channel = cast(TextChannel, await doomer_server.fetch_channel(BOTAUSBEUTUNG_ID))
+
+		now = datetime.now()
+		ts = datetime.timestamp(now)
+		time = datetime.fromtimestamp(ts)
+
+		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+		await bot_channel.send("DM to bot by: " + message.author.name)
+
+		if not message.content == "":
+			await nikki_channel.send(message.content)
+			await bot_channel.send(message.content)
+		for sticker in message.stickers:
+			await nikki_channel.send(sticker.url)
+			await bot_channel.send(sticker.url)
+
+
 async def send_wat(message: Message) -> None:
 	a: list[str] = []
 	for unvalid_response in unvalid_responses:
@@ -297,19 +301,6 @@ async def send_wat(message: Message) -> None:
 	if not random_unvalid_response.find("{user}") == -1:
 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
 	await message.channel.send(random_unvalid_response)
-
-# async def in_any_guild(message: Message) -> bool:
-#
-# 	if message.content.casefold().startswith("good girl"):
-# 		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
-# 		return True
-#
-# 	if message.content.find(":3") != -1:
-# 		await CMD.say_neko_smile(cast(ServerTextChannel, message.channel))
-# 		return True
-#
-# 	return False
-#
 
 
 def get_normalized_probability_weights() -> list[float]:
