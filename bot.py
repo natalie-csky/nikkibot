@@ -137,8 +137,10 @@ class Command:
 					message.content
 				)
 			await self.channel.send(
-				"Sicher, dass du folgende Nachricht an {user} per DM senden willst?" +
-				"Test"
+				"""Sicher, dass du folgende Nachricht an {user} per DM senden willst?
+				Nachricht:
+				{message}
+				""".format(user=self.to_user, message=message.content)
 			)
 
 
