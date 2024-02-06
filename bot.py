@@ -112,6 +112,7 @@ class Command:
 				await self.channel.send(error_mesage)
 				return
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
+		await timeout(10, self.channel)
 
 
 	def get_user_id(self, argument: str) -> object:
