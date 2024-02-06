@@ -90,7 +90,7 @@ class Command:
 		user_arguments: list[str] = user_message.split(" ")
 
 		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
-
+			print("hey")
 			argument_index: int = 0
 			for user_argument in user_arguments:
 				argument_index += 1
