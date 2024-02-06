@@ -236,8 +236,9 @@ async def on_message(message: Message) -> None:
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
 		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-
 		print(message.content)
+		for sticker in message.stickers:
+			print(sticker.url)
 	if message.guild is None:
 		return
 
