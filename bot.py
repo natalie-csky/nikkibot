@@ -242,7 +242,7 @@ async def on_message(message: Message) -> None:
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
 		print(client.get_channel(NIKKI_DM_ID))
-		await cast(discord.DMChannel, client.get_channel(NIKKI_DM_ID)).send(
+		await client.get_channel(NIKKI_DM_ID).send(
 			time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
 		)
 		if not message.content == "":
