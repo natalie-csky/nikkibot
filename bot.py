@@ -117,7 +117,7 @@ class Command:
 			return reply.author == self.user
 
 		try:
-			message: Message = await client.wait_for("message", check=check, timeout=300)
+			message: Message = await client.wait_for("message", check=check, timeout=20)
 		except TimeoutError:
 			await self.channel.send("Timeout: Befehl abgebrochen.")
 		else:
