@@ -230,7 +230,7 @@ async def on_ready() -> None:
 
 @client.event
 async def on_message(message: Message) -> None:
-	if isinstance(message.channel, discord.channel.DMChannel):
+	if isinstance(message.channel, discord.DMChannel):
 		print("hello")
 	if message.guild is None:
 		return
