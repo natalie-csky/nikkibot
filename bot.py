@@ -1,3 +1,4 @@
+import asyncio
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member
@@ -154,6 +155,11 @@ class Command:
 Command.SEND_DM_EXPECTED_ARGUMENTS = [
 	Command.get_user_id
 ]
+
+
+async def timeout(time: int, channel: ServerTextChannel) -> None:
+	await asyncio.sleep(time)
+	await channel.send("Timeout: Befehl abgebrochen")
 
 
 @client.event
