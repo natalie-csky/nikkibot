@@ -259,7 +259,8 @@ async def on_message(message: Message) -> None:
 
 	if message.content.casefold().startswith(PREFIX + "sende dm an"):
 		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
-		print("message: " + user_message + ".")
+		if user_message == "":
+			print("gotch buggy bug")
 		await command.send_dm(user_message)
 		is_valid_message = True
 
