@@ -1,7 +1,7 @@
 from datetime import datetime
 # noinspection PyUnresolvedReferences
 import discord
-from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
+from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 from typing import cast
 from numpy.random import choice
@@ -238,20 +238,19 @@ async def on_message(message: Message) -> None:
 		return
 
 	if isinstance(message.channel, discord.DMChannel):
+		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
+
 		now = datetime.now()
 		ts = datetime.timestamp(now)
 		time = datetime.fromtimestamp(ts)
-		# print(client.get_channel(NIKKI_DM_ID))
-		# await client.get_channel(NIKKI_DM_ID).send(
-		# 	time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name
-		# )
-		nikki_channel = await client.fetch_channel(NIKKI_DM_ID)
-		await nikki_channel.send("test123")
-		print(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+
+		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
+
 		if not message.content == "":
-			print(message.content)
+			await nikki_channel.send(message.content)
 		for sticker in message.stickers:
-			print(sticker.url)
+			await nikki_channel.send(sticker.url)
+
 	if message.guild is None:
 		return
 
