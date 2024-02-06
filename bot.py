@@ -16,7 +16,7 @@ Server = Guild
 PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
-NIKKI_DM_ID = 1204362891289960468
+NIKKI_DM_ID = 903375318943932437
 
 
 # region token setup
