@@ -3,7 +3,7 @@ import discord
 from discord import Message, TextChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 from typing import cast
-# from numpy.random import choice
+from numpy.random import choice
 
 # region members
 
@@ -28,8 +28,6 @@ intents.message_content = True
 intents.members = True
 client = Client(intents=intents)
 # endregion
-
-is_valid_message: bool
 
 unvalid_responses: dict[str, int] = {
 		"Hm?": 20,
@@ -244,9 +242,7 @@ async def on_message(message: Message) -> None:
 		return
 
 	command = Command(server, message.author, server_text_channel)
-	# is_valid_message = False
-
-	# is_valid_message = await in_any_guild(message)
+	is_valid_message = False
 
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert(server_text_channel.category is not None)
@@ -261,16 +257,17 @@ async def on_message(message: Message) -> None:
 	if message.content.casefold().startswith(PREFIX + "sende dm an"):
 		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
 		await command.send_dm(user_message)
+		is_valid_message = True
 
-	# if message.content.startswith(PREFIX) and not is_valid_message:
-	# 	a: list[str] = []
-	# 	for unvalid_response in unvalid_responses:
-	# 		a.append(unvalid_response)
-	# 	p: list[float] = get_normalized_probability_weights()
-	# 	random_unvalid_response: str = choice(a=a, p=p)
-	# 	if not random_unvalid_response.find("{user}") == -1:
-	# 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
-	# 	await message.channel.send(random_unvalid_response)
+	if message.content.startswith(PREFIX) and not is_valid_message:
+		a: list[str] = []
+		for unvalid_response in unvalid_responses:
+			a.append(unvalid_response)
+		p: list[float] = get_normalized_probability_weights()
+		random_unvalid_response: str = choice(a=a, p=p)
+		if not random_unvalid_response.find("{user}") == -1:
+			random_unvalid_response = random_unvalid_response.format(user=message.author.name)
+		await message.channel.send(random_unvalid_response)
 
 
 # async def in_any_guild(message: Message) -> bool:
