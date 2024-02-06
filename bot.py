@@ -119,7 +119,7 @@ class Command:
 		try:
 			message: Message = await client.wait_for("message", check=check, timeout=20)
 		except TimeoutError:
-			await self.channel.send("Timeout: Befehl abgebrochen.")
+			await self.channel.send(self.user.mention + " Timeout: Befehl abgebrochen.")
 		else:
 			await self.channel.send("Sicher, dass du folgende Nachricht an user senden willst? \n\n" + message.content)
 
