@@ -12,7 +12,7 @@ ServerTextChannel = TextChannel | Thread
 Server = Guild
 # endregion
 
-PREFIX = "!Nikki, "
+PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
 # region token setup
@@ -67,14 +67,17 @@ class Command:
 		USER_ID_NOT_INT = auto()
 		USER_ID_NOT_FOUND = auto()
 
+	SEND_DM_EXPECTED_ARGUMENTS: list  # type: ignore
 
 	server: Server
 	user: User | Member
 	channel: ServerTextChannel
 
-	to_all = False
 	command_error = Error.OK
 	command_error_message: str
+
+	# send_dm
+	to_all = False
 
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
@@ -86,13 +89,9 @@ class Command:
 	async def send_dm(self, user_message: str) -> None:
 		user_arguments: list[str] = user_message.split(" ")
 
-		expected_arguments: list = [  # type: ignore
-			self.get_user_id,
-		]
+		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
 
-		for expected_argument in expected_arguments:
-
-			argument_index: int = -1
+			argument_index: int = 0
 			for user_argument in user_arguments:
 				argument_index += 1
 
@@ -139,6 +138,9 @@ class Command:
 		return Command.Error.USER_ID_NOT_FOUND
 
 
+	def get_message(self, argument: str) -> object:
+		pass
+
 	def assert_user_id_is_int(self, value: str) -> bool:
 		try:
 			int(value)
@@ -147,6 +149,11 @@ class Command:
 			self.command_error = Command.Error.USER_ID_NOT_INT
 			return False
 		return True
+
+
+Command.SEND_DM_EXPECTED_ARGUMENTS = [
+	Command.get_user_id
+]
 
 
 @client.event
