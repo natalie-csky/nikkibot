@@ -98,9 +98,9 @@ class Command:
 			return
 
 		user_arguments: list[str] = user_message.split(" ")
-		print(user_arguments)
-		if not len(user_arguments):
-			print("hey")
+
+		if len(user_arguments) == 1 and user_arguments[0] == "":
+			print("gotcha little bug")
 
 		for user_argument in user_arguments:
 
