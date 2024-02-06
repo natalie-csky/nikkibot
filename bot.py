@@ -203,6 +203,7 @@ Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM send
 				match condition:
 					case Command.ReplyCondition.IS_CONFIRMED:
 						await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
+						return None
 					case Command.ReplyCondition.IS_SEND_TO_ALL:
 						await self.channel.send("""
 Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
