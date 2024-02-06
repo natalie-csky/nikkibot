@@ -89,6 +89,7 @@ class Command:
 	async def send_dm(self, user_message: str) -> None:
 		user_arguments: list[str] = user_message.split(" ")
 
+		print(Command.SEND_DM_EXPECTED_ARGUMENTS)
 		for expected_argument in Command.SEND_DM_EXPECTED_ARGUMENTS:
 			argument_index: int = 0
 			for user_argument in user_arguments:
@@ -153,9 +154,6 @@ class Command:
 Command.SEND_DM_EXPECTED_ARGUMENTS = [
 	Command.get_user_id
 ]
-
-print(Command.SEND_DM_EXPECTED_ARGUMENTS)
-print("hye")
 
 @client.event
 async def on_ready() -> None:
