@@ -70,7 +70,7 @@ class Command:
 	SEND_DM_EXPECTED_ARGUMENTS: list  # type: ignore
 
 	server: Server
-	user: User | Member
+	from_user: User | Member
 	channel: ServerTextChannel
 
 	command_error = Error.OK
@@ -78,11 +78,12 @@ class Command:
 
 	# send_dm
 	to_all = False
+	to_user: User | Member
 
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
 		self.server = server
-		self.user = user
+		self.from_user = user
 		self.channel = channel
 
 
@@ -114,14 +115,27 @@ class Command:
 		await self.channel.send("Okay, bitte stelle deine Nachricht.")
 
 		def check(reply: Message) -> bool:
-			return reply.author == self.user
+			return reply.author == self.from_user
 
 		try:
 			message: Message = await client.wait_for("message", check=check, timeout=20)
 		except TimeoutError:
-			await self.channel.send(self.user.mention + " Timeout: Befehl abgebrochen.")
+			await self.channel.send(
+				self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
+			)
 		else:
-			await self.channel.send("Sicher, dass du folgende Nachricht an user senden willst? \n\n" + message.content)
+			if self.to_all:
+				await self.channel.send(
+					"Sicher, dass du folgende Nachricht an ALLE User in diesem Server per DM senden willst? \n\n" +
+					message.content
+				)
+			else:
+				await self.channel.send(
+					"Sicher, dass du folgende Nachricht an {user} per DM senden willst? \n\n".format(
+						user=self.to_user
+					) +
+					message.content
+				)
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -141,7 +155,7 @@ class Command:
 			if member.id == int(argument):
 				user_id = int(argument)
 				maybe_user: User | None = client.get_user(user_id)
-				self.user = cast(User | Member, maybe_user)
+				self.to_user = cast(User | Member, maybe_user)
 				return Command.Error.OK
 
 		self.command_error_message = argument
