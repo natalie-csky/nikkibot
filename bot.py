@@ -132,8 +132,9 @@ class Command:
 
 		if self.to_all:
 			for member in self.server.members:
-				# await member.send(direct_message.content)
-				print(member)
+				if member.bot:
+					continue
+				await member.send(direct_message.content)
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
 			await self.to_user.send(direct_message.content)
