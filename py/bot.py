@@ -70,8 +70,8 @@ unvalid_responses: dict[str, int] = {
 }
 
 # TODO DELETE
-MAX_TIME = datetime(2024, 2, 3)
-MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
+MAX_TIME = datetime(2024, 2, 3, tzinfo=timezone.utc)
+# MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
 
 # endregion
 
