@@ -20,7 +20,7 @@ async def b() -> None:
 	await asyncio.sleep(10)
 	print("b")
 
-async def main() -> int:
+def main() -> int:
 	with asyncio.Runner() as runner:
 		runner.run(b())
 		runner.run(a())
@@ -30,4 +30,4 @@ async def main() -> int:
 if __name__ == "__main__":
 	# SFTPClient(SFTPClient.Actions.SEND_TO_FILE)
 	# py.bot.dm_logs
-	sys.exit(asyncio.run(main()))
+	sys.exit(main())
