@@ -7,7 +7,21 @@ SFTP_HOST_FILE = "sftp_host"
 KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
 ALGORITHM = "ssh-ed25519"
 
+class SFTPNoSuppliedArgumentsError(Exception):
+	"""Raised when the action of an SFTPClient was supplied no or false arguments."""
+
 class SFTPClient:
+	"""
+	Args:
+		action: an action the client should execute
+			{Actions.SEND_TO_FILE}: append text to file
+			{Actions.CLEAR_FILE}: clear file
+		file: a file on the server
+		text: an array of strings to append to a file
+
+	Raises:
+		SFTPNoSuppliedArgumentsError: An error occurred when the action of an SFTPClient was supplied no or false arguments.
+	"""
 	class Actions(Enum):
 		SEND_TO_FILE = auto()
 		CLEAR_FILE = auto()
@@ -49,10 +63,13 @@ class SFTPClient:
 				self.sftp_client = cast(paramiko.SFTPClient, paramiko.SFTPClient.from_transport(transport))
 				assert (self.sftp_client is not None), "could not connect to sftp server"
 
-				assert (file is not None)
+				if file is None:
+					raise FileNotFoundError("no file specified")
+
 				match action:
 					case SFTPClient.Actions.SEND_TO_FILE:
-						assert(text is not None)
+						if text is None:
+							raise
 						self.send_to_file(text=text, to_file=file)
 					case SFTPClient.Actions.CLEAR_FILE:
 						self.clear_file(file=file)
@@ -90,6 +107,3 @@ class SFTPClient:
 		username = config.get("data", "username")
 		password = config.get("data", "password")
 		return sftp_host, username, password
-
-
-client = SFTPClient(SFTPClient.Actions.CLEAR_FILE, file="doom_de/user_logs/logs.html")

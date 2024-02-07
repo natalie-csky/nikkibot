@@ -286,15 +286,15 @@ async def relay_bot_dm(message: Message) -> None:
 		time = datetime.fromtimestamp(ts)
 
 		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-		await bot_channel.send("DM to bot by: **" + message.author.name + "**")
+		# await bot_channel.send("DM to bot by: **" + message.author.name + "**")
 		dm_logs.append(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 
 		if not message.content == "":
 			await nikki_channel.send(message.content)
-			await bot_channel.send(message.content)
+			# await bot_channel.send(message.content)
 			dm_logs.append(message.content)
 		for sticker in message.stickers:
-			await nikki_channel.send(sticker.url)
+			# await nikki_channel.send(sticker.url)
 			await bot_channel.send(sticker.url)
 			dm_logs.append(sticker.url)
 
@@ -324,5 +324,5 @@ def get_normalized_probability_weights() -> list[float]:
 
 	return normalized_weights
 
-
+print("time to run the bot!")
 client.run(TOKEN)
