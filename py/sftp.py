@@ -10,11 +10,12 @@ ALGORITHM = "ssh-ed25519"
 class SFTPClient:
 	class Actions(Enum):
 		SEND_TO_FILE = auto()
+		CLEAR_FILE = auto()
 
 	sftp_client: paramiko.SFTPClient
 
 
-	def __init__(self, action: Actions, file: str, text: list[str]) -> None:
+	def __init__(self, action: Actions, file: str = None, text: list[str] = None) -> None:
 		# Paramiko documentation: https://docs.paramiko.org/en/latest/
 
 		sftp_host, username, password = SFTPClient.setup_config()
@@ -51,6 +52,7 @@ class SFTPClient:
 				match action:
 					case SFTPClient.Actions.SEND_TO_FILE:
 						self.send_to_file(text=text, to_file=file)
+						self.clear_file(file=file)
 
 				self.sftp_client.close()
 
@@ -73,6 +75,10 @@ class SFTPClient:
 				file.write("<br />" + line)
 
 
+	def clear_file(self, file: str) -> None:
+		self.sftp_client.open(file, "w").close()
+
+
 	@staticmethod
 	def setup_config() -> Tuple[str, str, str]:
 		config = configparser.ConfigParser()
@@ -83,9 +89,4 @@ class SFTPClient:
 		return sftp_host, username, password
 
 
-test = [
-	"Hello World!",
-	"Bye World!"
-]
-
-client = SFTPClient(SFTPClient.Actions.SEND_TO_FILE, text=test, file="doom_de/user_logs/logs.html")
+client = SFTPClient(SFTPClient.Actions.CLEAR_FILE, file="doom_de/user_logs/logs.html")
