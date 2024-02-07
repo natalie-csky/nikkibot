@@ -330,4 +330,5 @@ def get_normalized_probability_weights() -> list[float]:
 async def run(conn: Connection) -> None:
 	conn.send("Hello world :3")
 	print("time to run the bot!")
-	client.run(TOKEN)
+
+	# client.run(TOKEN)
