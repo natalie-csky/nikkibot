@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 import discord
 
-from datetime import datetime
+from datetime import datetime, timezone
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 # noinspection PyProtectedMember
@@ -71,6 +71,7 @@ unvalid_responses: dict[str, int] = {
 
 # TODO DELETE
 MAX_TIME = datetime(2024, 2, 3)
+MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
 
 # endregion
 
