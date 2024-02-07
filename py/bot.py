@@ -69,6 +69,9 @@ unvalid_responses: dict[str, int] = {
 		"Du schreibst nämlich mit h, oder?": 2
 }
 
+# TODO DELETE
+MAX_TIME = datetime(2024, 2, 3)
+
 # endregion
 
 class Command:
@@ -151,8 +154,9 @@ class Command:
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
 			pass
-			print(datetime.utcnow())
-			print(self.joined_at)
+			is_true = self.joined_at < MAX_TIME
+			print("user joined before is: " + str(is_true))
+
 			# await self.to_user.send(direct_message.content)
 			# await self.channel.send("Nachricht wurde versendet :3")
 
