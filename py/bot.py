@@ -36,6 +36,8 @@ intents = Intents.default()
 intents.message_content = True
 intents.members = True
 client = Client(intents=intents)
+
+dm_logs: list[str] = []
 # endregion
 
 unvalid_responses: dict[str, int] = {
@@ -285,13 +287,16 @@ async def relay_bot_dm(message: Message) -> None:
 
 		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 		await bot_channel.send("DM to bot by: **" + message.author.name + "**")
+		dm_logs.append(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 
 		if not message.content == "":
 			await nikki_channel.send(message.content)
 			await bot_channel.send(message.content)
+			dm_logs.append(message.content)
 		for sticker in message.stickers:
 			await nikki_channel.send(sticker.url)
 			await bot_channel.send(sticker.url)
+			dm_logs.append(sticker.url)
 
 
 async def send_wat(message: Message) -> None:
