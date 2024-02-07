@@ -152,13 +152,10 @@ class Command:
 					continue
 				if cast(datetime, member.joined_at) > MAX_TIME:
 					continue
-				await self.channel.send("theoretisch wäre eine nachricht an: " + member.name + " gesendet worden.")
-				# await member.send(direct_message.content)
+				# await self.channel.send("theoretisch wäre eine nachricht an: " + member.name + " gesendet worden.")
+				await member.send(direct_message.content)
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
-			pass
-			# is_true = self.joined_at < MAX_TIME
-			# print("user joined before is: " + str(is_true))
 			await self.to_user.send(direct_message.content)
 			await self.channel.send("Nachricht wurde versendet :3")
 
