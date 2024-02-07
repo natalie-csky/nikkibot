@@ -1,25 +1,17 @@
 import configparser
 import paramiko
 from typing import cast, Tuple
-import os
-print (os.getcwd())
 
-
-SFTP_HOST_FILE = "../sftp_host"
+SFTP_HOST_FILE = "sftp_host"
 KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
 ALGORITHM = "ssh-ed25519"
 
 def setup_config() -> Tuple[str, str, str]:
 	config = configparser.ConfigParser()
-
-	f = open(SFTP_HOST_FILE, "r", encoding="utf-8")
-
-	config.read_file(f)
-	print(config.sections())
+	config.read(SFTP_HOST_FILE)
 	sftp_host = config.get("data", "sftp_host")
 	username = config.get("data", "username")
 	password = config.get("data", "password")
-	f.close()
 	return sftp_host, username, password
 
 
