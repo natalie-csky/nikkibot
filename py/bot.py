@@ -151,6 +151,7 @@ class Command:
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
 			pass
+			print(datetime.utcnow())
 			print(self.joined_at)
 			# await self.to_user.send(direct_message.content)
 			# await self.channel.send("Nachricht wurde versendet :3")
