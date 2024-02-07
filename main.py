@@ -10,11 +10,11 @@ async def wait_time() -> None:
 	await asyncio.sleep(10)
 
 
-def main() -> int:
+async def main() -> int:
 	parent_conn, child_conn = Pipe()
 	p = Process(target=bot.run, name="nikki_bot", args=(child_conn,))
 	p.start()
-	asyncio.run(wait_time())
+	await wait_time()
 	print(parent_conn.recv())
 	print("BEFORE CHILD TERMINATED")
 	p.terminate()
@@ -27,4 +27,4 @@ def main() -> int:
 if __name__ == "__main__":
 	# SFTPClient(SFTPClient.Actions.SEND_TO_FILE)
 	# py.bot.dm_logs
-	sys.exit(main())
+	sys.exit(asyncio.run(main()))
