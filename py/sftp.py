@@ -1,6 +1,9 @@
 import configparser
 import paramiko
 from typing import cast, Tuple
+import os
+print (os.getcwd())
+
 
 SFTP_HOST_FILE = "../sftp_host"
 KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
