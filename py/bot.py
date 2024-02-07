@@ -324,5 +324,7 @@ def get_normalized_probability_weights() -> list[float]:
 
 	return normalized_weights
 
-print("time to run the bot!")
-client.run(TOKEN)
+
+async def run() -> None:
+	print("time to run the bot!")
+	client.run(TOKEN)
