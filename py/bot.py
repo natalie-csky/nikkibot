@@ -1,10 +1,12 @@
-from datetime import datetime
 # noinspection PyUnresolvedReferences
 import discord
+
+from datetime import datetime
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
-from typing import cast
 from numpy.random import choice
+from typing import cast
+
 
 # region members
 
