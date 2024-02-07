@@ -1,14 +1,14 @@
 # noinspection PyUnresolvedReferences
 import discord
+import pytz
 
-from datetime import datetime, timezone
+from datetime import datetime
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 # noinspection PyProtectedMember
 # from multiprocessing.connection import Connection
 from numpy.random import choice
 from typing import cast
-
 
 # region members
 
@@ -70,7 +70,7 @@ unvalid_responses: dict[str, int] = {
 }
 
 # TODO DELETE
-MAX_TIME = datetime(2024, 2, 3, tzinfo=timezone.utc)
+MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
 # MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
 
 # endregion
