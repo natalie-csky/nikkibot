@@ -1,5 +1,6 @@
 import asyncio
-from multiprocessing import Process, Pipe
+from concurrent.futures import ProcessPoolExecutor
+# from multiprocessing import Process, Pipe
 import sys
 import py.bot as bot
 # noinspection PyUnresolvedReferences
@@ -11,6 +12,7 @@ async def wait_time() -> None:
 
 
 async def main() -> int:
+
 	# parent_conn, child_conn = Pipe()
 	# p = Process(target=bot.run, name="nikki_bot", args=(child_conn,))
 	# p.start()

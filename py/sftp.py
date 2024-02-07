@@ -22,6 +22,7 @@ class SFTPClient:
 	Raises:
 		SFTPNoSuppliedArgumentsError: An error occurred when the action of an SFTPClient was supplied no or false arguments.
 	"""
+	# TODO rework Actions as methods, duh
 	class Actions(Enum):
 		SEND_TO_FILE = auto()
 		CLEAR_FILE = auto()

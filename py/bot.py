@@ -5,7 +5,7 @@ from datetime import datetime
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
 # noinspection PyProtectedMember
-from multiprocessing.connection import Connection
+# from multiprocessing.connection import Connection
 from numpy.random import choice
 from typing import cast
 
@@ -145,11 +145,13 @@ class Command:
 			for member in self.server.members:
 				if member.bot:
 					continue
+				# if member.joined_at
 				await member.send(direct_message.content)
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
-			await self.to_user.send(direct_message.content)
-			await self.channel.send("Nachricht wurde versendet :3")
+			print(self.to_user.joined_at)
+			# await self.to_user.send(direct_message.content)
+			# await self.channel.send("Nachricht wurde versendet :3")
 
 
 	def get_user_id(self, argument: str) -> object:
@@ -327,8 +329,9 @@ def get_normalized_probability_weights() -> list[float]:
 	return normalized_weights
 
 
-async def run(conn: Connection) -> None:
-	conn.send("Hello world :3")
-	print("time to run the bot!")
+def run() -> None:
+	pass
+	# conn.send("Hello world :3")
+	# print("time to run the bot!")
 
-	# client.run(TOKEN)
+client.run(TOKEN)
