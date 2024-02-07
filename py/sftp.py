@@ -69,7 +69,7 @@ class SFTPClient:
 	def send_to_file(self, text: list[str], to_file: str) -> None:
 		with self.sftp_client.open(to_file, "a") as file:
 			for line in text:
-				file.write("\n" + line)
+				file.write("<br />" + line)
 
 
 	@staticmethod
