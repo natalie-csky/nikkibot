@@ -1,7 +1,7 @@
 import paramiko
 from typing import cast
 
-KNOWN_HOSTS = "~/.ssh/known_hosts"
+KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
 SFTP_HOST = "access995155803.webspace-data.io"
 ALGORITHM = "ssh-ed25519"
 USERNAME = "u115380384"
