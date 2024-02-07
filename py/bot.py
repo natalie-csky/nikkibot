@@ -156,12 +156,14 @@ class Command:
 				try:
 					await member.send(direct_message.content)
 				except Exception as e:
-					print(e)
+					await self.channel.send("User " + member.name + ": " + str(e))
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
-			await self.to_user.send(direct_message.content)
+			try:
+				await self.to_user.send(direct_message.content)
+			except Exception as e:
+				await self.channel.send("User: " + self.to_user.name + ": " + str(e))
 			await self.channel.send("Nachricht wurde versendet :3")
-
 
 
 	def get_user_id(self, argument: str) -> object:
