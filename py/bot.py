@@ -95,6 +95,7 @@ class Command:
 	# send_dm
 	to_all = False
 	to_user: User | Member
+	joined_at: datetime
 	# endregion
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
@@ -149,7 +150,8 @@ class Command:
 				await member.send(direct_message.content)
 			await self.channel.send("Nachrichten wurden versendet :3")
 		else:
-			print(self.to_user.joined_at)
+			pass
+			print(self.joined_at)
 			# await self.to_user.send(direct_message.content)
 			# await self.channel.send("Nachricht wurde versendet :3")
 
@@ -170,6 +172,7 @@ class Command:
 
 			if member.id == int(argument):
 				user_id = int(argument)
+				self.joined_at = cast(datetime, member.joined_at)
 				maybe_user: User | None = client.get_user(user_id)
 				self.to_user = cast(User | Member, maybe_user)
 				return Command.Error.OK
