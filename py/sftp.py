@@ -70,13 +70,14 @@ class SFTPClient:
 
 	def send_to_file(self, text: list[str], to_file: str) -> None:
 		with self.sftp_client.open(to_file, "a") as file:
-			file.write("<br />")
+			file.write("<br />\n")
 			for line in text:
-				file.write("<br />" + line)
+				file.write("<br />\n" + line)
 
 
 	def clear_file(self, file: str) -> None:
-		self.sftp_client.open(file, "w").close()
+		with self.sftp_client.open(file, "w"):
+			pass
 
 
 	@staticmethod
