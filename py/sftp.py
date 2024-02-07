@@ -1,19 +1,29 @@
+import configparser
 import paramiko
-from typing import cast
+from typing import cast, Tuple
 
+SFTP_HOST_FILE = "../sftp_host"
 KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
-SFTP_HOST = "access995155803.webspace-data.io"
 ALGORITHM = "ssh-ed25519"
-USERNAME = "u115380384"
-PASSWORD = "handgrip-freckles-proclaim"
+
+def setup_config() -> Tuple[str, str, str]:
+	config = configparser.ConfigParser()
+	config.read(SFTP_HOST_FILE)
+	sftp_host = config["DEFAULT"]["SFTP_HOST"]
+	username = config["DEFAULT"]["USERNAME"]
+	password = config["DEFAULT"]["PASSWORD"]
+	return sftp_host, username, password
+
 
 def not_main() -> None:
+	sftp_host, username, password = setup_config()
+
 	hostkeys = paramiko.hostkeys.HostKeys(KNOWN_HOSTS)
-	host_fingerprint = cast(dict[str, paramiko.PKey], hostkeys.lookup(SFTP_HOST))[ALGORITHM]
+	host_fingerprint = cast(dict[str, paramiko.PKey], hostkeys.lookup(sftp_host))[ALGORITHM]
 
 	try:
-		tp = paramiko.Transport((SFTP_HOST, 22))
-		tp.connect(username=USERNAME, password=PASSWORD, hostkey=host_fingerprint)
+		tp = paramiko.Transport((sftp_host, 22))
+		tp.connect(username=username, password=password, hostkey=host_fingerprint)
 
 		try:
 			sftp_client = paramiko.SFTPClient.from_transport(tp)
