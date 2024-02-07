@@ -9,9 +9,9 @@ ALGORITHM = "ssh-ed25519"
 def setup_config() -> Tuple[str, str, str]:
 	config = configparser.ConfigParser()
 	config.read(SFTP_HOST_FILE)
-	sftp_host = config.get("DATA", "SFTP_HOST")
-	username = config.get("DATA", "USERNAME")
-	password = config.get("DATA", "PASSWORD")
+	sftp_host = config.get("data", "sftp_host")
+	username = config.get("data", "username")
+	password = config.get("data", "password")
 	return sftp_host, username, password
 
 
