@@ -4,6 +4,8 @@ import discord
 from datetime import datetime
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
+# noinspection PyProtectedMember
+from multiprocessing.connection import Connection
 from numpy.random import choice
 from typing import cast
 
@@ -325,6 +327,7 @@ def get_normalized_probability_weights() -> list[float]:
 	return normalized_weights
 
 
-async def run() -> None:
+async def run(conn: Connection) -> None:
+	conn.send("Hello world :3")
 	print("time to run the bot!")
 	client.run(TOKEN)
