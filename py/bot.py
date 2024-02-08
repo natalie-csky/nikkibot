@@ -39,7 +39,7 @@ intents.message_content = True
 intents.members = True
 client = Client(intents=intents)
 
-dm_logs: list[str] = []
+
 # endregion
 
 unvalid_responses: dict[str, int] = {
@@ -72,6 +72,8 @@ unvalid_responses: dict[str, int] = {
 # # TODO DELETE
 # MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
 # MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
+
+dm_logs: list[str] = []
 
 # endregion
 
@@ -343,7 +345,4 @@ def get_normalized_probability_weights() -> list[float]:
 
 
 def run() -> None:
-	pass
-	# conn.send("Hello world :3")
-	print("time to run the bot!")
 	client.run(TOKEN)

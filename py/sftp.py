@@ -70,7 +70,7 @@ class SFTPClient:
 				match action:
 					case SFTPClient.Actions.SEND_TO_FILE:
 						if text is None:
-							raise
+							raise SFTPNoSuppliedArgumentsError("no text supplied")
 						self.send_to_file(text=text, to_file=file)
 					case SFTPClient.Actions.CLEAR_FILE:
 						self.clear_file(file=file)

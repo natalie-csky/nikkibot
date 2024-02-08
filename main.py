@@ -1,8 +1,8 @@
 import asyncio
 import sys
 import threading
+
 import py.bot as bot
-# noinspection PyUnresolvedReferences
 from py.sftp import SFTPClient
 
 
@@ -11,15 +11,14 @@ async def wait() -> None:
 
 
 async def main() -> None:
-	t1 = threading.Thread(target=bot.run, daemon=True)
-	t1.start()
+	bot_thread = threading.Thread(target=bot.run, daemon=True)
+	bot_thread.start()
 	while True:
 		await wait()
-		print("10 seconds over")
+		if len(bot.dm_logs) > 0:
+			SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", bot.dm_logs)
+			bot.dm_logs.clear()
 
 
 if __name__ == "__main__":
-	# logging.basicConfig(level=logging.DEBUG)
-	# SFTPClient(SFTPClient.Actions.SEND_TO_FILE)
-	# py.bot.dm_logs
 	sys.exit(asyncio.run(main()))
