@@ -298,8 +298,6 @@ async def on_message(message: Message) -> None:
 async def relay_bot_dm(message: Message) -> None:
 	if isinstance(message.channel, discord.DMChannel):
 		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
-		doomer_server = await client.fetch_guild(DOOMERTREFFPUNKT_ID)
-		bot_channel = cast(TextChannel, await doomer_server.fetch_channel(BOTAUSBEUTUNG_ID))
 
 		now = datetime.now()
 		ts = datetime.timestamp(now)
@@ -310,11 +308,9 @@ async def relay_bot_dm(message: Message) -> None:
 
 		if not message.content == "":
 			await nikki_channel.send(message.content)
-			# await bot_channel.send(message.content)
 			dm_logs.append(message.content)
 		for sticker in message.stickers:
-			# await nikki_channel.send(sticker.url)
-			await bot_channel.send(sticker.url)
+			await nikki_channel.send(sticker.url)
 			dm_logs.append(sticker.url)
 
 
