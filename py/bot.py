@@ -67,7 +67,7 @@ unvalid_responses: dict[str, int] = {
 		"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 4,
 		"Frag doch einfach nochmal.": 7,
 		"Du schreibst nämlich mit h, oder?": 4,
-		DOG_MIDDLE_FINGER: 1000
+		DOG_MIDDLE_FINGER: 6
 }
 
 # # TODO DELETE
