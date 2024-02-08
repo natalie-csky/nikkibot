@@ -1,4 +1,5 @@
 import asyncio
+from bleach.sanitizer import Cleaner
 import sys
 import threading
 
@@ -16,7 +17,11 @@ async def main() -> None:
 	while True:
 		await wait()
 		if len(bot.dm_logs) > 0:
-			SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", bot.dm_logs)
+			sanitized_logs: list[str] = []
+			cleaner = Cleaner(strip=True)
+			for log in bot.dm_logs:
+				sanitized_logs.append(cleaner.clean(log))
+			SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", sanitized_logs)
 			bot.dm_logs.clear()
 
 

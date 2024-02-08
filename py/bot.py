@@ -1,14 +1,13 @@
-# noinspection PyUnresolvedReferences
-import discord
 # import pytz
-
 from datetime import datetime
-from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
 from enum import Enum, auto
-# noinspection PyProtectedMember
-# from multiprocessing.connection import Connection
 from numpy.random import choice
 from typing import cast
+
+# noinspection PyUnresolvedReferences
+import discord
+from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
+
 
 # region members
 
@@ -305,7 +304,6 @@ async def relay_bot_dm(message: Message) -> None:
 		time = datetime.fromtimestamp(ts)
 
 		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-		# await bot_channel.send("DM to bot by: **" + message.author.name + "**")
 		dm_logs.append(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
 
 		if not message.content == "":
@@ -316,6 +314,7 @@ async def relay_bot_dm(message: Message) -> None:
 			# await nikki_channel.send(sticker.url)
 			await bot_channel.send(sticker.url)
 			dm_logs.append(sticker.url)
+
 
 
 async def send_wat(message: Message) -> None:
