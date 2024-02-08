@@ -1,6 +1,6 @@
 # noinspection PyUnresolvedReferences
 import discord
-import pytz
+# import pytz
 
 from datetime import datetime
 from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
@@ -69,8 +69,8 @@ unvalid_responses: dict[str, int] = {
 		"Du schreibst nämlich mit h, oder?": 2
 }
 
-# TODO DELETE
-MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
+# # TODO DELETE
+# MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
 # MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
 
 # endregion
@@ -150,8 +150,8 @@ class Command:
 			for member in self.server.members:
 				if member.bot:
 					continue
-				if cast(datetime, member.joined_at) > MAX_TIME:
-					continue
+				# if cast(datetime, member.joined_at) > MAX_TIME:
+				# 	continue
 				# await self.channel.send("theoretisch wäre eine nachricht an: " + member.name + " gesendet worden.")
 				try:
 					await member.send(direct_message.content)
@@ -345,6 +345,5 @@ def get_normalized_probability_weights() -> list[float]:
 def run() -> None:
 	pass
 	# conn.send("Hello world :3")
-	# print("time to run the bot!")
-
-client.run(TOKEN)
+	print("time to run the bot!")
+	client.run(TOKEN)

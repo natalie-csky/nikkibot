@@ -1,32 +1,25 @@
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
-# from multiprocessing import Process, Pipe
 import sys
+import threading
 import py.bot as bot
 # noinspection PyUnresolvedReferences
 from py.sftp import SFTPClient
 
 
-async def wait_time() -> None:
+async def wait() -> None:
 	await asyncio.sleep(10)
 
 
-async def main() -> int:
-
-	# parent_conn, child_conn = Pipe()
-	# p = Process(target=bot.run, name="nikki_bot", args=(child_conn,))
-	# p.start()
-	await wait_time()
-	# print(parent_conn.recv())
-	# print("BEFORE CHILD TERMINATED")
-	# p.terminate()
-	# print("AFTER CHILD TERMINATED")
-	# p.close()
-	# print("main.py ended gracefully")
-	return 0
+async def main() -> None:
+	t1 = threading.Thread(target=bot.run, daemon=True)
+	t1.start()
+	while True:
+		await wait()
+		print("10 seconds over")
 
 
 if __name__ == "__main__":
+	# logging.basicConfig(level=logging.DEBUG)
 	# SFTPClient(SFTPClient.Actions.SEND_TO_FILE)
 	# py.bot.dm_logs
 	sys.exit(asyncio.run(main()))
