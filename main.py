@@ -6,6 +6,7 @@ import threading
 import py.bot as bot
 from py.sftp import SFTPClient
 
+ALLOWED_TAGS = frozenset({'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul'})
 
 async def wait() -> None:
 	await asyncio.sleep(10)
@@ -18,9 +19,11 @@ async def main() -> None:
 		await wait()
 		if len(bot.dm_logs) > 0:
 			sanitized_logs: list[str] = []
-			cleaner = Cleaner(strip=True)
+
+			cleaner = Cleaner(tags=ALLOWED_TAGS, strip=True)
 			for log in bot.dm_logs:
 				sanitized_logs.append(cleaner.clean(log))
+			print("sending logs to webpage")
 			SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", sanitized_logs)
 			bot.dm_logs.clear()
 

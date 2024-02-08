@@ -318,7 +318,6 @@ async def relay_bot_dm(message: Message) -> None:
 			dm_logs.append(sticker.url)
 
 
-
 async def send_wat(message: Message) -> None:
 	a: list[str] = []
 	for unvalid_response in unvalid_responses:
