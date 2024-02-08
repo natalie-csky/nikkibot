@@ -24,6 +24,7 @@ DOOMERTREFFPUNKT_ID = 1011019396577243307
 BOTAUSBEUTUNG_ID = 1115389541696667879
 CHEFETAGE_ID = 1113691175803695124
 
+DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
 # region token setup
 TOKEN_FILE = "token"
@@ -45,11 +46,11 @@ unvalid_responses: dict[str, int] = {
 		"Hm?": 20,
 		"Wat?": 20,
 		"Was laberst du?": 15,
-		"Hascht du überhaupt gelernt, Alter, was labersch du?": 7,
-		"Was du am Labern bist hab ich gefragt.": 7,
+		"Hascht du überhaupt gelernt, Alter, was labersch du?": 6,
+		"Was du am Labern bist hab ich gefragt.": 6,
 		"Excusez-moi?": 15,
 		"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
-		"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 2,
+		"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 4,
 		"Red Deutsch.": 12,
 		"Sprich Deutsch.": 12,
 		"Sprich Klartext.": 12,
@@ -59,13 +60,14 @@ unvalid_responses: dict[str, int] = {
 		"!?": 15,
 		"Entschuldigung?": 17,
 		"Bitte was?": 17,
-		"Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 1,
+		"Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 3,
 		"Nah dran, glaub ich. Versuch nochmal.": 15,
-		"Wie war das? Ich versteh dich nicht so gut.": 6,
-		"error (value < 0): user iq too low": 2,
-		"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 2,
-		"Frag doch einfach nochmal.": 6,
-		"Du schreibst nämlich mit h, oder?": 2
+		"Wie war das? Ich versteh dich nicht so gut.": 7,
+		"error (value < 0): user iq too low": 4,
+		"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 4,
+		"Frag doch einfach nochmal.": 7,
+		"Du schreibst nämlich mit h, oder?": 4,
+		DOG_MIDDLE_FINGER: 1000
 }
 
 # # TODO DELETE
