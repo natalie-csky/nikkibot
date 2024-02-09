@@ -20,6 +20,7 @@ async def main() -> None:
 		f = open("logs/logs.txt", "a")
 		for log in bot.dm_logs:
 			f.write(log)
+			f.write("\n")
 		f.close()
 
 		if len(bot.dm_logs) > 0:
