@@ -17,7 +17,7 @@ async def main() -> None:
 	bot_thread.start()
 	while True:
 		await wait()
-		f = open("logs/logs.txt", "a")
+		f = open("logs/logs.txt", "a+")
 		for log in bot.dm_logs:
 			f.write(log)
 		f.close()
