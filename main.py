@@ -14,10 +14,10 @@ async def wait() -> None:
 
 def log_to_file() -> None:
 	f = open("logs/logs.txt", "a")
-	f.write("\n")
 	for log in bot.dm_logs:
 		f.write(log)
 		f.write("\n")
+	f.write("\n")
 	f.close()
 
 
