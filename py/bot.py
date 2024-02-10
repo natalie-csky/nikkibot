@@ -326,7 +326,7 @@ async def send_wat(message: Message) -> None:
 
 async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Message]:
 	server = client.get_guild(server_id)
-	channel = cast(TextableChannel, server.get_channel(channel_id))
+	channel = cast(ServerTextChannel, server.get_channel(channel_id))
 	return [message async for message in channel.history(limit=limit)]
 
 def get_normalized_probability_weights() -> list[float]:

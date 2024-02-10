@@ -43,7 +43,7 @@ async def main() -> None:
 	await bot.on_ready()
 	print("in main: bot is ready")
 	# noinspection PyTypeChecker wtf
-	messages: list[Message] = await bot.query_messages(880768960402948110, 10)
+	messages: list[Message] = await bot.query_messages(880768960402948106, 880768960402948110, 10)
 	query_messages(messages)
 	return
 	while True:
