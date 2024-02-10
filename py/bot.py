@@ -14,6 +14,7 @@ from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Cli
 # region type aliases
 ServerTextChannel = TextChannel | Thread
 Server = Guild
+Author = Member | User
 # endregion
 
 PREFIX = "!n "
@@ -74,6 +75,7 @@ unvalid_responses: dict[str, int] = {
 # MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
 # MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
 
+message_logs: list[str] = []
 dm_logs: list[str] = []
 
 # endregion
@@ -323,6 +325,11 @@ async def send_wat(message: Message) -> None:
 	if not random_unvalid_response.find("{user}") == -1:
 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
 	await message.channel.send(random_unvalid_response)
+
+
+def query_messages(channel_id: int, limit: int) -> list[Message]:
+	channel: ServerTextChannel = client.get_channel(channel_id)
+	return [message async for message in channel.history(limit=limit)]
 
 
 def get_normalized_probability_weights() -> list[float]:

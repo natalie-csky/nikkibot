@@ -1,8 +1,8 @@
 import asyncio
 from bleach.sanitizer import Cleaner
+from discord import Message
 import sys
 import threading
-
 import py.bot as bot
 from py.sftp import SFTPClient
 
@@ -29,10 +29,22 @@ def log_to_webpage() -> None:
 	SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", sanitized_logs)
 
 
+def query_messages(messages: list[Message]) -> None:
+	payload: list[str] = []
+	for message in messages:
+		payload.append(message.content)
+	SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", payload)
+
+
+# noinspection PyUnreachableCode
 async def main() -> None:
 	bot_thread = threading.Thread(target=bot.run, daemon=True)
 	bot_thread.start()
-
+	await bot.on_ready()
+	print("in main: bot is ready")
+	messages = bot.query_messages(880768960402948110, 10)
+	query_messages(messages)
+	return
 	while True:
 		await wait()
 
