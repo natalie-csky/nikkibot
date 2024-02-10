@@ -327,6 +327,7 @@ async def send_wat(message: Message) -> None:
 async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Message]:
 	server = client.get_guild(server_id)
 	if server is None:
+		print("no server found")
 		return list()
 	channel = cast(ServerTextChannel, server.get_channel(channel_id))
 	print(channel.name)
