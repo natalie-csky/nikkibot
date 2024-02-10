@@ -29,7 +29,7 @@ def log_to_webpage() -> None:
 	SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", sanitized_logs)
 
 
-def query_messages(messages: list[Message]) -> None:
+def query_message(messages: list[Message]) -> None:
 	payload: list[str] = []
 	for message in messages:
 		payload.append(message.content)
@@ -42,8 +42,9 @@ async def main() -> None:
 	bot_thread.start()
 	await bot.on_ready()
 	print("in main: bot is ready")
-	messages = bot.query_messages(880768960402948110, 10)
-	query_messages(messages)
+	# noinspection PyTypeChecker wtf
+	messages: list[Message] = bot.query_messages(880768960402948110, 10)
+	query_message(messages)
 	return
 	while True:
 		await wait()
