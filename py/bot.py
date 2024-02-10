@@ -347,5 +347,5 @@ def get_normalized_probability_weights() -> list[float]:
 
 	return normalized_weights
 
-async def run() -> None:
+def run() -> None:
 	client.run(TOKEN)
