@@ -327,7 +327,7 @@ async def send_wat(message: Message) -> None:
 	await message.channel.send(random_unvalid_response)
 
 
-def query_messages(channel_id: int, limit: int) -> list[Message]:
+async def query_messages(channel_id: int, limit: int) -> list[Message]:
 	channel: ServerTextChannel = client.get_channel(channel_id)
 	return [message async for message in channel.history(limit=limit)]
 
