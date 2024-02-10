@@ -33,6 +33,7 @@ def query_messages(messages: list[Message]) -> None:
 	payload: list[str] = []
 	for message in messages:
 		payload.append(message.content)
+	print(payload)
 	SFTPClient(SFTPClient.Actions.SEND_TO_FILE, "doom_de/user_logs/logs.html", payload)
 
 
@@ -41,7 +42,6 @@ async def main() -> None:
 	bot_thread = threading.Thread(target=bot.run, daemon=True)
 	bot_thread.start()
 	await bot.on_ready()
-	print("in main: bot is ready")
 	# noinspection PyTypeChecker wtf
 	messages: list[Message] = await bot.query_messages(880768960402948106, 880768960402948110, 10)
 	query_messages(messages)
