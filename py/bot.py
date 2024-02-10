@@ -2,19 +2,20 @@
 from datetime import datetime
 from enum import Enum, auto
 from numpy.random import choice
-from typing import cast
+from typing import cast, TypeAlias
 
 # noinspection PyUnresolvedReferences
 import discord
-from discord import Message, TextChannel, DMChannel, Thread, Guild, Intents, Client, User, Member, Permissions, Role
-
+from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel, StageChannel, Intents, Client, \
+					User, Member, Permissions, Role
 
 # region members
 
 # region type aliases
-ServerTextChannel = TextChannel | Thread
-Server = Guild
-Author = Member | User
+ServerTextChannel: TypeAlias = TextChannel | Thread
+TextableChannel: TypeAlias = VoiceChannel, StageChannel, TextChannel, Thread
+Server: TypeAlias = Guild
+Author: TypeAlias = Member | User
 # endregion
 
 PREFIX = "!n "
@@ -40,35 +41,34 @@ intents.message_content = True
 intents.members = True
 client = Client(intents=intents)
 
-
 # endregion
 
 unvalid_responses: dict[str, int] = {
-		"Hm?": 20,
-		"Wat?": 20,
-		"Was laberst du?": 15,
-		"Hascht du überhaupt gelernt, Alter, was labersch du?": 6,
-		"Was du am Labern bist hab ich gefragt.": 6,
-		"Excusez-moi?": 15,
-		"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
-		"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 4,
-		"Red Deutsch.": 9,
-		"Sprich Deutsch.": 9,
-		"Sprich Klartext.": 9,
-		"Red mal Klartext.": 9,
-		"?": 15,
-		"???": 15,
-		"!?": 15,
-		"Entschuldigung?": 17,
-		"Bitte was?": 17,
-		"Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 3,
-		"Nah dran, glaub ich. Versuch nochmal.": 15,
-		"Wie war das? Ich versteh dich nicht so gut.": 7,
-		"error (value < 0): user iq too low": 4,
-		"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 4,
-		"Frag doch einfach nochmal.": 7,
-		"Du schreibst nämlich mit h, oder?": 4,
-		DOG_MIDDLE_FINGER: 6
+	"Hm?": 20,
+	"Wat?": 20,
+	"Was laberst du?": 15,
+	"Hascht du überhaupt gelernt, Alter, was labersch du?": 6,
+	"Was du am Labern bist hab ich gefragt.": 6,
+	"Excusez-moi?": 15,
+	"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
+	"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 4,
+	"Red Deutsch.": 9,
+	"Sprich Deutsch.": 9,
+	"Sprich Klartext.": 9,
+	"Red mal Klartext.": 9,
+	"?": 15,
+	"???": 15,
+	"!?": 15,
+	"Entschuldigung?": 17,
+	"Bitte was?": 17,
+	"Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 3,
+	"Nah dran, glaub ich. Versuch nochmal.": 15,
+	"Wie war das? Ich versteh dich nicht so gut.": 7,
+	"error (value < 0): user iq too low": 4,
+	"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 4,
+	"Frag doch einfach nochmal.": 7,
+	"Du schreibst nämlich mit h, oder?": 4,
+	DOG_MIDDLE_FINGER: 6
 }
 
 # # TODO DELETE
@@ -105,7 +105,9 @@ class Command:
 	to_all = False
 	to_user: User | Member
 	joined_at: datetime
+
 	# endregion
+
 
 	def __init__(self, server: Server, user: User | Member, channel: ServerTextChannel) -> None:
 		self.server = server
@@ -232,7 +234,7 @@ Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM send
 ### Nachricht:
 {message}
 """.format(message=message.content)
-						)
+												)
 			else:
 				match condition:
 					case Command.ReplyCondition.IS_CONFIRMED:
@@ -244,7 +246,7 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 ### Nachricht:
 {message}
 """.format(user=self.to_user, message=message.content)
-						)
+												)
 		return message
 
 
@@ -255,11 +257,9 @@ Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
 			case Command.ReplyCondition.IS_SEND_TO_ALL:
 				return self.to_all
 
-
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
-
 
 @client.event
 async def on_message(message: Message) -> None:
@@ -280,7 +280,7 @@ async def on_message(message: Message) -> None:
 	is_valid_message = False
 
 	server_text_channel = cast(ServerTextChannel, message.channel)
-	assert(server_text_channel.category is not None)
+	assert (server_text_channel.category is not None)
 
 	if server.id == DOOMERTREFFPUNKT_ID \
 		and not \
@@ -295,7 +295,6 @@ async def on_message(message: Message) -> None:
 
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		await send_wat(message)
-
 
 async def relay_bot_dm(message: Message) -> None:
 	if isinstance(message.channel, discord.DMChannel):
@@ -315,7 +314,6 @@ async def relay_bot_dm(message: Message) -> None:
 			await nikki_channel.send(sticker.url)
 			dm_logs.append(sticker.url)
 
-
 async def send_wat(message: Message) -> None:
 	a: list[str] = []
 	for unvalid_response in unvalid_responses:
@@ -326,11 +324,10 @@ async def send_wat(message: Message) -> None:
 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
 	await message.channel.send(random_unvalid_response)
 
-
 async def query_messages(channel_id: int, limit: int) -> list[Message]:
-	channel = client.get_channel(channel_id)
+	# voicechannel, stagechannel, textchannel, thread
+	channel = cast(TextableChannel, client.get_channel(channel_id))
 	return [message async for message in channel.history(limit=limit)]
-
 
 def get_normalized_probability_weights() -> list[float]:
 	weight_total: float = 0.0
@@ -345,7 +342,6 @@ def get_normalized_probability_weights() -> list[float]:
 		normalized_weights.append(normalized_weight)
 
 	return normalized_weights
-
 
 def run() -> None:
 	client.run(TOKEN)
