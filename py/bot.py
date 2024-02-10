@@ -329,6 +329,7 @@ async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Me
 	if server is None:
 		return list()
 	channel = cast(ServerTextChannel, server.get_channel(channel_id))
+	print(channel.name)
 	return [message async for message in channel.history(limit=limit)]
 
 def get_normalized_probability_weights() -> list[float]:
