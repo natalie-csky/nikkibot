@@ -2,7 +2,7 @@
 from datetime import datetime
 from enum import Enum, auto
 from numpy.random import choice
-from typing import cast, TypeAlias
+from typing import cast, TypeAlias, Union
 
 # noinspection PyUnresolvedReferences
 import discord
@@ -13,7 +13,7 @@ from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel
 
 # region type aliases
 ServerTextChannel: TypeAlias = TextChannel | Thread
-TextableChannel: TypeAlias = VoiceChannel, StageChannel, TextChannel, Thread
+TextableChannel: TypeAlias = Union[VoiceChannel, StageChannel, TextChannel, Thread]  # why
 Server: TypeAlias = Guild
 Author: TypeAlias = Member | User
 # endregion
