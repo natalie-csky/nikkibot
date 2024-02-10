@@ -41,7 +41,7 @@ def query_messages(messages: list[Message]) -> None:
 async def main() -> None:
 	bot_thread = threading.Thread(target=bot.run, daemon=True)
 	bot_thread.start()
-	await bot.on_ready()
+	await wait()
 	# noinspection PyTypeChecker wtf
 	messages: list[Message] = await bot.query_messages(880768960402948106, 880768960402948110, 10)
 	query_messages(messages)
