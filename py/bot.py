@@ -2,7 +2,7 @@
 from datetime import datetime
 from enum import Enum, auto
 from numpy.random import choice
-from typing import cast, TypeAlias, Union, Optional
+from typing import cast, Union, Optional
 
 # noinspection PyUnresolvedReferences
 import discord
@@ -12,10 +12,10 @@ from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel
 # region members
 
 # region type aliases
-ServerTextChannel: TypeAlias = Union[TextChannel, Thread]
-TextableChannel: TypeAlias = Union[VoiceChannel, StageChannel, TextChannel, Thread]  # why
-Server: TypeAlias = Guild
-Author: TypeAlias = Union[Member, User]
+ServerTextChannel = Union[TextChannel, Thread]
+TextableChannel = Union[VoiceChannel, StageChannel, TextChannel, Thread]  # why
+Server = Guild
+Author = Union[Member, User]
 # endregion
 
 PREFIX = "!n "
