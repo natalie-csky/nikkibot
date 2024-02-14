@@ -3,3 +3,4 @@ numpy
 paramiko
 pytz
 bleach
+requests

@@ -1,7 +1,8 @@
 import configparser
 import paramiko
+
 from enum import Enum, auto
-from typing import cast, Tuple
+from typing import cast, Tuple, Union, Optional
 
 SFTP_HOST_FILE = "sftp_host"
 KNOWN_HOSTS = "/home/nikki_sky/.ssh/known_hosts"
@@ -30,7 +31,7 @@ class SFTPClient:
 	sftp_client: paramiko.SFTPClient
 
 
-	def __init__(self, action: Actions, file: str | None = None, text: list[str] | None = None) -> None:
+	def __init__(self, action: Actions, file: Union[str, None] = None, text: Optional[list[str]] = None) -> None:
 		# Paramiko documentation: https://docs.paramiko.org/en/latest/
 
 		sftp_host, username, password = SFTPClient.setup_config()
@@ -48,6 +49,8 @@ class SFTPClient:
 
 			# Note: In this case, an address (as a tuple) is being passed here, which connects a socket to that address
 			# that will be used for communication.
+
+			# noinspection PyTypeChecker
 			transport = paramiko.Transport((sftp_host, 22))
 
 			# This is a shortcut for start_client(), get_remote_server_key()
@@ -67,13 +70,13 @@ class SFTPClient:
 				if file is None:
 					raise FileNotFoundError("no file specified")
 
-				match action:
-					case SFTPClient.Actions.SEND_TO_FILE:
-						if text is None:
-							raise SFTPNoSuppliedArgumentsError("no text supplied")
-						self.send_to_file(text=text, to_file=file)
-					case SFTPClient.Actions.CLEAR_FILE:
-						self.clear_file(file=file)
+				if action == SFTPClient.Actions.SEND_TO_FILE:
+					if text is None:
+						raise SFTPNoSuppliedArgumentsError("no text supplied")
+					self.send_to_file(text=text, to_file=file)
+
+				elif action == SFTPClient.Actions.CLEAR_FILE:
+					self.clear_file(file=file)
 
 				self.sftp_client.close()
 
