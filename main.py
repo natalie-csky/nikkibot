@@ -1,9 +1,11 @@
 import asyncio
+import os
 import sys
 import threading
 
-# import requests
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 
+# import requests
 import py.bot as bot
 
 from bleach.sanitizer import Cleaner
