@@ -1,3 +1,5 @@
 mypy.ini
 .idea/*
 py/__pycache__/*
+web/*
+.venv/*

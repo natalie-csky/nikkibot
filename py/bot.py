@@ -320,7 +320,7 @@ async def send_wat(message: Message) -> None:
 	a: list[str] = []
 	for unvalid_response in unvalid_responses:
 		a.append(unvalid_response)
-	p: list[float] = get_normalized_probability_weights()
+	p: list[float] = [4, 3]  # get_normalized_probability_weights()
 	random_unvalid_response: str = choice(a=a, p=p)
 	if not random_unvalid_response.find("{user}") == -1:
 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
@@ -337,19 +337,19 @@ async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Me
 	return [message async for message in channel.history(limit=limit)]
 
 
-def get_normalized_probability_weights() -> list[float]:
-	weight_total: float = 0.0
-	for unvalid_response in unvalid_responses:
-		weight_total += unvalid_responses[unvalid_response]
-
-	weight_modifier: float = 1 / weight_total
-	normalized_weights: list[float] = []
-
-	for unvalid_response in unvalid_responses:
-		normalized_weight: float = weight_modifier * unvalid_responses[unvalid_response]
-		normalized_weights.append(normalized_weight)
-
-	return normalized_weights
+# def get_normalized_probability_weights() -> list[float]:
+# 	weight_total: float = 0.0
+# 	for unvalid_response in unvalid_responses:
+# 		weight_total += unvalid_responses[unvalid_response]
+#
+# 	weight_modifier: float = 1 / weight_total
+# 	normalized_weights: list[float] = []
+#
+# 	for unvalid_response in unvalid_responses:
+# 		normalized_weight: float = weight_modifier * unvalid_responses[unvalid_response]
+# 		normalized_weights.append(normalized_weight)
+#
+# 	return normalized_weights
 
 
 def run() -> None:
