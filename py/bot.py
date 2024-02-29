@@ -7,7 +7,7 @@ from typing import cast, Union, Optional
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel, StageChannel, Intents, Client, \
-					User, Member, Permissions, Role
+					User, Member
 
 # region members
 
@@ -22,9 +22,13 @@ PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
 NIKKI_DM_ID = 1204362891289960468
+
 DOOMERTREFFPUNKT_ID = 1011019396577243307
 BOTAUSBEUTUNG_ID = 1115389541696667879
 CHEFETAGE_ID = 1113691175803695124
+
+RO_ADMIN_ROLLE = 814656618184310804
+RO_SERVER = 814621528044863528
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
@@ -116,9 +120,14 @@ class Command:
 
 
 	async def send_dm(self, user_message: str) -> None:
+		# ro_server: Server = await client.fetch_guild(814621528044863528)
+		# ro_admin_role: Role = ro_server.get_role(814621528044863528)
 
-		user_permission: Permissions = self.channel.permissions_for(cast(Union[Member, Role], self.from_user))
-		if not user_permission.mention_everyone:
+		# user_permission: Permissions = self.channel.permissions_for(cast(Union[Member, Role], self.from_user))
+		# if not user_permission.mention_everyone:
+		# 	await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
+		# 	return
+		if not self.from_user.get_role(814621528044863528):
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 			return
 
