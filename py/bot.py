@@ -22,6 +22,7 @@ PREFIX = "!n "
 BOT_NAME = "NikkiBot"
 
 NIKKI_DM_ID = 1204362891289960468
+NIKKI_USER_ID = 582633528097767466
 
 DOOMERTREFFPUNKT_ID = 1011019396577243307
 BOTAUSBEUTUNG_ID = 1115389541696667879
@@ -127,11 +128,8 @@ class Command:
 		# if not user_permission.mention_everyone:
 		# 	await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 		# 	return
-		if self.from_user is User:
-			return
 		has_role: Union[Role, None] = self.from_user.get_role(RO_ADMIN_ROLLE)
-		print(has_role)
-		if not has_role:
+		if not has_role and not self.from_user.id == NIKKI_USER_ID:
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 			return
 
