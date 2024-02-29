@@ -7,7 +7,7 @@ from typing import cast, Union, Optional
 # noinspection PyUnresolvedReferences
 import discord
 from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel, StageChannel, Intents, Client, \
-					User, Member
+					User, Member, Role
 
 # region members
 
@@ -127,7 +127,11 @@ class Command:
 		# if not user_permission.mention_everyone:
 		# 	await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 		# 	return
-		if not self.from_user.get_role(814621528044863528):
+		if self.from_user is User:
+			return
+		has_role: Union[Role, None] = self.from_user.get_role(814621528044863528)
+		print(has_role)
+		if not has_role:
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 			return
 
