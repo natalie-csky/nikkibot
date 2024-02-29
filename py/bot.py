@@ -19,7 +19,7 @@ Author = Union[Member, User]
 # endregion
 
 PREFIX = "!n "
-BOT_NAME = "NikkiBot"
+BOT_NAME = "RoPingui"
 
 NIKKI_DM_ID = 1204362891289960468
 NIKKI_USER_ID = 582633528097767466
@@ -303,11 +303,8 @@ async def on_message(message: Message) -> None:
 		if not user_message == "":
 			await command.send_dm(user_message)
 			is_valid_message = True
-	print("hi1")
 	if message.content.startswith(PREFIX) and not is_valid_message:
-		print("hi3")
 		await send_wat(message)
-	print("hi2")
 
 
 async def relay_bot_dm(message: Message) -> None:
