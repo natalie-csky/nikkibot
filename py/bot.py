@@ -128,7 +128,7 @@ class Command:
 		# if not user_permission.mention_everyone:
 		# 	await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 		# 	return
-		has_role: Union[Role, None] = self.from_user.get_role(RO_ADMIN_ROLLE)
+		has_role: Union[Role, None] = self.from_user.get_role(RO_ADMIN_ROLLE)  # type: ignore
 		if not has_role and not self.from_user.id == NIKKI_USER_ID:
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
 			return
@@ -303,9 +303,11 @@ async def on_message(message: Message) -> None:
 		if not user_message == "":
 			await command.send_dm(user_message)
 			is_valid_message = True
-
+	print("hi1")
 	if message.content.startswith(PREFIX) and not is_valid_message:
+		print("hi3")
 		await send_wat(message)
+	print("hi2")
 
 
 async def relay_bot_dm(message: Message) -> None:
