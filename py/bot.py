@@ -129,7 +129,7 @@ class Command:
 		# 	return
 		if self.from_user is User:
 			return
-		has_role: Union[Role, None] = self.from_user.get_role(814621528044863528)
+		has_role: Union[Role, None] = self.from_user.get_role(RO_ADMIN_ROLLE)
 		print(has_role)
 		if not has_role:
 			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
