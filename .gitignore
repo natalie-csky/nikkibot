@@ -3,3 +3,4 @@ mypy.ini
 py/__pycache__/*
 web/*
 .venv/*
+token

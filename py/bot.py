@@ -277,8 +277,6 @@ async def on_message(message: Message) -> None:
 	if message.author == client.user:
 		return
 
-	await relay_bot_dm(message)
-
 	if message.guild is None:
 		return
 
@@ -305,25 +303,6 @@ async def on_message(message: Message) -> None:
 			is_valid_message = True
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		await send_wat(message)
-
-
-async def relay_bot_dm(message: Message) -> None:
-	if isinstance(message.channel, discord.DMChannel):
-		nikki_channel = cast(DMChannel, await client.fetch_channel(NIKKI_DM_ID))
-
-		now = datetime.now()
-		ts = datetime.timestamp(now)
-		time = datetime.fromtimestamp(ts)
-
-		await nikki_channel.send(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-		dm_logs.append(time.strftime("%d-%m-%Y, %H:%M:%S - ") + "DM by: " + message.author.name)
-
-		if not message.content == "":
-			await nikki_channel.send(message.content)
-			dm_logs.append(message.content)
-		for sticker in message.stickers:
-			await nikki_channel.send(sticker.url)
-			dm_logs.append(sticker.url)
 
 
 async def send_wat(message: Message) -> None:
