@@ -19,7 +19,7 @@ Author = Union[Member, User]
 # endregion
 
 PREFIX = "! "
-BOT_NAME = "RoPingui"
+BOT_NAME = "Menace to Society"
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
