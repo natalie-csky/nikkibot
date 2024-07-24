@@ -18,18 +18,8 @@ Server = Guild
 Author = Union[Member, User]
 # endregion
 
-PREFIX = "!n "
+PREFIX = "! "
 BOT_NAME = "RoPingui"
-
-NIKKI_DM_ID = 1204362891289960468
-NIKKI_USER_ID = 582633528097767466
-
-DOOMERTREFFPUNKT_ID = 1011019396577243307
-BOTAUSBEUTUNG_ID = 1115389541696667879
-CHEFETAGE_ID = 1113691175803695124
-
-RO_ADMIN_ROLLE = 814656618184310804
-RO_SERVER = 814621528044863528
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
@@ -290,11 +280,6 @@ async def on_message(message: Message) -> None:
 
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert (server_text_channel.category is not None)
-
-	if server.id == DOOMERTREFFPUNKT_ID \
-		and not \
-		(server_text_channel.id == BOTAUSBEUTUNG_ID and server_text_channel.category.id == CHEFETAGE_ID):
-		return
 
 	if message.content.casefold().startswith(PREFIX + "sende dm an"):
 		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
