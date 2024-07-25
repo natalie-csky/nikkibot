@@ -101,6 +101,7 @@ dm_logs: list[str] = []
 @client.event
 async def on_ready() -> None:
 	print("NikkiBot is up and running :3")
+	
 
 
 @client.event
@@ -114,20 +115,11 @@ async def on_message(message: Message) -> None:
 	server_text_channel: ServerTextChannel
 	server_text_channel = cast(ServerTextChannel, message.channel)
 
-	# server: Server = message.guild
-
-	# command = Command(server, message.author, server_text_channel)
-	
 	is_valid_message = False
 
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert (server_text_channel.category is not None)
 
-	# if message.content.casefold().startswith(PREFIX + "sende dm an"):
-		# user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
-		# if not user_message == "":
-			# await command.send_dm(user_message)
-			# is_valid_message = True
 	
 	if message.content.casefold().startswith(PREFIX + "toggle :3"):
 		await toggle_naughty_cat(message)
@@ -155,7 +147,6 @@ async def groq_chat(message: Message, user_message: str) -> None:
 	
 	global groq_message_history
 	for groq_message in groq_message_history:
-		print("Nachricht Historie: " + groq_message["content"])
 		messages.append(groq_message)
 	
 	messages.append({"role": "user", "content": user_message})
