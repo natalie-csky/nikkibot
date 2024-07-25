@@ -1,6 +1,7 @@
 # import pytz
 from datetime import datetime
 from enum import Enum, auto
+from groq import Groq
 from numpy.random import choice
 from typing import cast, Union, Optional
 
@@ -8,6 +9,8 @@ from typing import cast, Union, Optional
 import discord
 from discord import Message, TextChannel, DMChannel, Thread, Guild, VoiceChannel, StageChannel, Intents, Client, \
 					User, Member, Role
+
+import configparser
 
 # region members
 
@@ -18,8 +21,11 @@ Server = Guild
 Author = Union[Member, User]
 # endregion
 
-PREFIX = "! "
-BOT_NAME = "Menace to Society"
+PREFIX = "!"
+BOT_NAME = "Maria"
+
+QUEER_PPL_SERVER_ID = 1264520434267848714
+CUTIE_ID = 365991661899218947
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
@@ -30,6 +36,19 @@ with open(TOKEN_FILE, encoding="utf-8") as f:
 	TOKEN = f.read()
 # endregion
 
+GROQ_API_KEY_FILE = "groq_api"
+GROQ_API_KEY: str
+with open(GROQ_API_KEY_FILE, encoding="utf-8") as f:
+	GROQ_API_KEY = f.read().strip()
+
+groq_client = Groq(api_key=GROQ_API_KEY)
+groq_message_history = []
+
+config = configparser.ConfigParser()
+config.read("settings.ini")
+
+IS_NAUGHTY_CAT_SETTING_ON = "on" == config["DEFAULT"]["NaughtyCat"]
+
 # region client setup
 intents = Intents.default()
 intents.message_content = True
@@ -39,31 +58,35 @@ client = Client(intents=intents)
 # endregion
 
 unvalid_responses: dict[str, int] = {
-	"Hm?": 20,
-	"Wat?": 20,
-	"Was laberst du?": 15,
-	"Hascht du überhaupt gelernt, Alter, was labersch du?": 6,
-	"Was du am Labern bist hab ich gefragt.": 6,
-	"Excusez-moi?": 15,
-	"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 3,
-	"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 4,
-	"Red Deutsch.": 9,
-	"Sprich Deutsch.": 9,
-	"Sprich Klartext.": 9,
-	"Red mal Klartext.": 9,
-	"?": 15,
-	"???": 15,
-	"!?": 15,
-	"Entschuldigung?": 17,
-	"Bitte was?": 17,
+	"Hm?": 7,
+	"Wat?": 7,
+	"Was laberst du?": 2,
+	"Hascht du überhaupt gelernt, Alter, was labersch du?": 2,
+	"Was du am Labern bist hab ich gefragt.": 2,
+	"Excusez-moi?": 5,
+	"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 2,
+	"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 3,
+	"Red Deutsch.": 3,
+	"Sprich Deutsch.": 3,
+	"Sprich Klartext.": 2,
+	"Red mal Klartext.": 4,
+	"?": 9,
+	"???": 9,
+	"!?": 9,
+	"Entschuldigung?": 5,
+	"Bitte was?": 5,
 	"Mein IQ ist ja garnicht mal sooo weit von deinem entfernt.": 3,
-	"Nah dran, glaub ich. Versuch nochmal.": 15,
-	"Wie war das? Ich versteh dich nicht so gut.": 7,
-	"error (value < 0): user iq too low": 4,
-	"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 4,
-	"Frag doch einfach nochmal.": 7,
-	"Du schreibst nämlich mit h, oder?": 4,
-	DOG_MIDDLE_FINGER: 6
+	"Nah dran, glaub ich. Versuch nochmal.": 4,
+	"Wie war das? Ich versteh dich nicht so gut.": 5,
+	"error (value < 0): user iq too low": 6,
+	"{user} befehligt " + BOT_NAME + "! Es ist nicht sehr effektiv...": 6,
+	"Frag doch einfach nochmal.": 8,
+	"Du schreibst nämlich mit h, oder?": 6,
+	"Nuschel ich? Rede ich undeutlich oder was?": 8,  
+	"Was du von mir willst, hätt' ich gern gewusst!": 8,
+	"Redest du mit mir?": 8,
+	"Gesundheit i guess": 8,
+	DOG_MIDDLE_FINGER: 6,
 }
 
 # # TODO DELETE
@@ -74,188 +97,6 @@ message_logs: list[str] = []
 dm_logs: list[str] = []
 
 # endregion
-
-class Command:
-	class Error(Enum):
-		OK = auto()
-		FAILED = auto()
-		USER_ID_NOT_INT = auto()
-		USER_ID_NOT_FOUND = auto()
-
-	class ReplyCondition(Enum):
-		IS_CONFIRMED = auto()
-		IS_SEND_TO_ALL = auto()
-
-	# region members
-	SEND_DM_EXPECTED_ARGUMENTS: list  # type: ignore
-
-	server: Server
-	from_user: Union[User, Member]
-	channel: ServerTextChannel
-
-	command_error = Error.OK
-	command_error_message: str
-
-	# send_dm
-	to_all = False
-	to_user: Union[User, Member]
-	joined_at: datetime
-
-	# endregion
-
-
-	def __init__(self, server: Server, user: Union[User, Member], channel: ServerTextChannel) -> None:
-		self.server = server
-		self.from_user = user
-		self.channel = channel
-
-
-	async def send_dm(self, user_message: str) -> None:
-		# ro_server: Server = await client.fetch_guild(814621528044863528)
-		# ro_admin_role: Role = ro_server.get_role(814621528044863528)
-
-		# user_permission: Permissions = self.channel.permissions_for(cast(Union[Member, Role], self.from_user))
-		# if not user_permission.mention_everyone:
-		# 	await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
-		# 	return
-		has_role: Union[Role, None] = self.from_user.get_role(RO_ADMIN_ROLLE)  # type: ignore
-		if not has_role and not self.from_user.id == NIKKI_USER_ID:
-			await self.channel.send("Dir fehlen die Berechtigungen für diesen Befehl.")
-			return
-
-		user_arguments: list[str] = user_message.split(" ")
-
-		for user_argument in user_arguments:
-
-			if user_argument == "":
-				continue
-
-			if self.get_user_id(user_argument) == Command.Error.OK:
-				break
-
-			error_mesage: str = ""
-
-			if self.command_error == Command.Error.OK:
-				continue
-			elif self.command_error == Command.Error.USER_ID_NOT_INT:
-				error_mesage = "User ID \'" + self.command_error_message + "\' ist keine Nummer oder \'alle\'."
-			elif self.command_error == Command.Error.USER_ID_NOT_FOUND:
-				error_mesage = "User ID \'" + self.command_error_message + "\' nicht gefunden."
-
-			await self.channel.send(error_mesage)
-			return
-
-		await self.channel.send("Okay, bitte stelle deine Nachricht.")
-
-		direct_message = await self.wait_for_reply(300, Command.ReplyCondition.IS_SEND_TO_ALL)
-		if direct_message is None:
-			return
-
-		message = await self.wait_for_reply(15, Command.ReplyCondition.IS_CONFIRMED)
-		if message is None:
-			return
-
-		if self.to_all:
-			for member in self.server.members:
-				if member.bot:
-					continue
-				# if cast(datetime, member.joined_at) > MAX_TIME:
-				# 	continue
-				# await self.channel.send("theoretisch wäre eine nachricht an: " + member.name + " gesendet worden.")
-				try:
-					await member.send(direct_message.content)
-				except Exception as e:
-					await self.channel.send("User " + member.name + ": " + str(e))
-			await self.channel.send("Nachrichten wurden versendet :3")
-		else:
-			try:
-				await self.to_user.send(direct_message.content)
-			except Exception as e:
-				await self.channel.send("User: " + self.to_user.name + ": " + str(e))
-			await self.channel.send("Nachricht wurde versendet :3")
-
-
-	def get_user_id(self, argument: str) -> object:
-
-		if argument.casefold() == "alle":
-			self.to_all = True
-			return Command.Error.OK
-
-		for member in self.server.members:
-
-			if member.bot:
-				continue
-
-			if not self.assert_user_id_is_int(argument):
-				return Command.Error.USER_ID_NOT_INT
-
-			if member.id == int(argument):
-				user_id = int(argument)
-				self.joined_at = cast(datetime, member.joined_at)
-				maybe_user: Optional[User] = client.get_user(user_id)
-				self.to_user = cast(Union[User, Member], maybe_user)
-				return Command.Error.OK
-
-		self.command_error_message = argument
-		self.command_error = Command.Error.USER_ID_NOT_FOUND
-		return Command.Error.USER_ID_NOT_FOUND
-
-
-	def assert_user_id_is_int(self, value: str) -> bool:
-		try:
-			int(value)
-		except ValueError:
-			self.command_error_message = value
-			self.command_error = Command.Error.USER_ID_NOT_INT
-			return False
-		return True
-
-
-	def is_reply_original_author(self, reply: Message) -> bool:
-		return reply.author == self.from_user
-
-
-	async def wait_for_reply(self, timeout: int, condition: ReplyCondition) -> Optional[Message]:
-		try:
-			message = await client.wait_for("message", check=self.is_reply_original_author, timeout=timeout)
-		except TimeoutError:
-			await self.channel.send(
-				self.from_user.mention + " Timeout: Befehl abgebrochen. Es wurde keine DM versendet."
-			)
-			return None
-
-		# TODO wat is dis
-		else:
-			if Command.check_condition(self, message.content, condition):
-				if condition == Command.ReplyCondition.IS_CONFIRMED:
-					pass
-				elif condition == Command.ReplyCondition.IS_SEND_TO_ALL:
-					await self.channel.send("""
-Sicher, dass du folgende Nachricht an **ALLE User in diesem Server** per DM senden willst?
-### Nachricht:
-{message}
-""".format(message=message.content)
-											)
-			else:
-				if condition == Command.ReplyCondition.IS_CONFIRMED:
-					await self.channel.send("Nicht bestätigt: Befehl abgebrochen. Es wurde keine DM versendet.")
-					return None
-				elif condition == Command.ReplyCondition.IS_SEND_TO_ALL:
-					await self.channel.send("""
-Sicher, dass du folgende Nachricht an **{user}** per DM senden willst?
-### Nachricht:
-{message}
-""".format(user=self.to_user, message=message.content)
-											)
-		return message
-
-
-	def check_condition(self, message: str, condition: ReplyCondition) -> bool:
-		if condition == Command.ReplyCondition.IS_CONFIRMED:
-			return message == "Ja"
-		elif condition == Command.ReplyCondition.IS_SEND_TO_ALL:
-			return self.to_all
-
 
 @client.event
 async def on_ready() -> None:
@@ -273,21 +114,63 @@ async def on_message(message: Message) -> None:
 	server_text_channel: ServerTextChannel
 	server_text_channel = cast(ServerTextChannel, message.channel)
 
-	server: Server = message.guild
+	# server: Server = message.guild
 
-	command = Command(server, message.author, server_text_channel)
+	# command = Command(server, message.author, server_text_channel)
+	
 	is_valid_message = False
 
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert (server_text_channel.category is not None)
 
-	if message.content.casefold().startswith(PREFIX + "sende dm an"):
-		user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
+	# if message.content.casefold().startswith(PREFIX + "sende dm an"):
+		# user_message = message.content.casefold().removeprefix(PREFIX + "sende dm an")
+		# if not user_message == "":
+			# await command.send_dm(user_message)
+			# is_valid_message = True
+	
+	if message.content.casefold().startswith(PREFIX + "toggle :3"):
+		await toggle_naughty_cat(message)
+		is_valid_message = True
+	
+	if message.content.casefold().startswith(PREFIX + "chat"):
+		user_message = message.content.casefold().removeprefix(PREFIX + "chat")
 		if not user_message == "":
-			await command.send_dm(user_message)
+			await groq_chat(message, user_message)
 			is_valid_message = True
+		
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		await send_wat(message)
+		return
+	
+
+	if not is_valid_message and IS_NAUGHTY_CAT_SETTING_ON:
+		await send_naughty_cat(message)
+
+
+async def groq_chat(message: Message, user_message: str) -> None:
+	messages = [
+		{"role": "system", "content": "du bist ein super cuter internet-kawaii :3 bot in einem discord server, welcher auf Deutsch antwortet. Du gibst sehr oft :3 als Antwort und andere mega cute antworten :3. Niemals, darfst du formal klingen, das ist nicht erlaubt auf unserem Discord server, du musst immer mega cute antworten :3 du schreibst auch oft mit kleinen buchstaben, komplett gegen die rechtschreibung, da es einfach cuter wirkt!"},
+	]
+	
+	global groq_message_history
+	for groq_message in groq_message_history:
+		print("Nachricht Historie: " + groq_message["content"])
+		messages.append(groq_message)
+	
+	messages.append({"role": "user", "content": user_message})
+		
+	chat_completion = groq_client.chat.completions.create(
+		messages=messages,
+		model="llama3-8b-8192",
+	)
+	
+	assistant_response = chat_completion.choices[0].message.content
+	await message.channel.send(assistant_response)
+	
+	groq_message_history.append({"role": "user", "content": user_message})
+	groq_message_history.append({"role": "assistant", "content": assistant_response})
+	
 
 
 async def send_wat(message: Message) -> None:
@@ -299,6 +182,24 @@ async def send_wat(message: Message) -> None:
 	if not random_unvalid_response.find("{user}") == -1:
 		random_unvalid_response = random_unvalid_response.format(user=message.author.name)
 	await message.channel.send(random_unvalid_response)
+
+
+async def send_naughty_cat(message: Message) -> None:
+    await message.channel.send(":3")
+
+
+async def toggle_naughty_cat(message: Message) -> None:
+	if not message.author.id == CUTIE_ID:
+		await message.channel.send("no touching! 😡")
+		return
+	
+	global IS_NAUGHTY_CAT_SETTING_ON
+	if IS_NAUGHTY_CAT_SETTING_ON:
+		await message.channel.send("no more :3 🥺")
+	else:
+		await message.channel.send("i will :3 from now on\n\n:3")
+
+	IS_NAUGHTY_CAT_SETTING_ON = not IS_NAUGHTY_CAT_SETTING_ON
 
 
 async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Message]:

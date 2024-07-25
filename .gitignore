@@ -4,3 +4,4 @@ py/__pycache__/*
 web/*
 .venv/*
 token
+groq_api
