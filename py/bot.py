@@ -3,6 +3,8 @@ from datetime import datetime
 from enum import Enum, auto
 from groq import Groq
 from numpy.random import choice
+import random
+import secrets
 from typing import cast, Union, Optional
 
 # noinspection PyUnresolvedReferences
@@ -48,6 +50,7 @@ config = configparser.ConfigParser()
 config.read("settings.ini")
 
 IS_NAUGHTY_CAT_SETTING_ON = "on" == config["DEFAULT"]["NaughtyCat"]
+NAUGHTY_CAT_CHANCE_SETTING = int(config["DEFAULT"]["NaughtyCatChancePercent"])
 
 # region client setup
 intents = Intents.default()
@@ -120,29 +123,60 @@ async def on_message(message: Message) -> None:
 	server_text_channel = cast(ServerTextChannel, message.channel)
 	assert (server_text_channel.category is not None)
 
-	
+	# region commands
 	if message.content.casefold().startswith(PREFIX + "toggle :3"):
 		await toggle_naughty_cat(message)
 		is_valid_message = True
 	
-	if message.content.casefold().startswith(PREFIX + "chat"):
-		user_message = message.content.casefold().removeprefix(PREFIX + "chat")
+	if message.content.casefold().startswith(PREFIX + "chat "):
+		user_message = message.content.casefold().removeprefix(PREFIX + "chat ")
 		if not user_message == "":
 			await groq_chat(message, user_message)
 			is_valid_message = True
-		
+	
+	if message.content.casefold().startswith(PREFIX + "chance :3 "):
+		user_message = message.content.casefold().removeprefix(PREFIX + "chance :3 ")
+		if not user_message == "":
+			await set_naughty_cat_chance(message, user_message)
+			is_valid_message = True
+	# end commands
+	
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		await send_wat(message)
 		return
 	
-
 	if not is_valid_message and IS_NAUGHTY_CAT_SETTING_ON:
-		await send_naughty_cat(message)
+		if is_naughty_cat_gamble_win():
+			await send_naughty_cat(message)
+
+
+def is_naughty_cat_gamble_win() -> bool:
+	return random.randint(0,100) <= NAUGHTY_CAT_CHANCE_SETTING
+
+
+async def set_naughty_cat_chance(message: Message, user_message: str) -> None:
+	if not (user_message.isdigit() or (user_message.startswith('-') and user_message[1:].isdigit())):
+		await send_wat(message)
+		return
+
+	chance = int(user_message)
+	
+	global config
+	global NAUGHTY_CAT_CHANCE_SETTING
+	
+	if chance >= 0 and chance <= 100:
+		NAUGHTY_CAT_CHANCE_SETTING = chance
+		config["DEFAULT"]["NaughtyCatChancePercent"] = str(chance)
+		with open("settings.ini", "w") as configfile:
+			config.write(configfile)
+		await message.channel.send("chance set to " + str(chance) + "%, nya :3")
+	else:
+		await message.channel.send("nöö, chance must be between 0 and 100 you silly :3")
 
 
 async def groq_chat(message: Message, user_message: str) -> None:
 	messages = [
-		{"role": "system", "content": "du bist ein super cuter internet-kawaii :3 bot in einem discord server, welcher auf Deutsch antwortet. Du gibst sehr oft :3 als Antwort und andere mega cute antworten :3. Niemals, darfst du formal klingen, das ist nicht erlaubt auf unserem Discord server, du musst immer mega cute antworten :3 du schreibst auch oft mit kleinen buchstaben, komplett gegen die rechtschreibung, da es einfach cuter wirkt!"},
+		{"role": "system", "content": "du bist Maria, ein super cuter internet :3 bot in einem discord server, welcher auf Deutsch antwortet. Du gibst sehr oft :3 als Antwort und andere mega cute antworten :3. Niemals, darfst du formal klingen, das ist nicht erlaubt auf unserem Discord server, du musst immer mega cute antworten :3 du schreibst auch oft mit kleinen buchstaben, komplett gegen die rechtschreibung, da es einfach cuter wirkt!"},
 	]
 	
 	global groq_message_history
@@ -162,7 +196,6 @@ async def groq_chat(message: Message, user_message: str) -> None:
 	groq_message_history.append({"role": "user", "content": user_message})
 	groq_message_history.append({"role": "assistant", "content": assistant_response})
 	
-
 
 async def send_wat(message: Message) -> None:
 	a: list[str] = []
@@ -184,14 +217,20 @@ async def toggle_naughty_cat(message: Message) -> None:
 		await message.channel.send("no touching! 😡")
 		return
 	
+	global config
 	global IS_NAUGHTY_CAT_SETTING_ON
+	
 	if IS_NAUGHTY_CAT_SETTING_ON:
+		config["DEFAULT"]["NaughtyCat"] = "off"
 		await message.channel.send("no more :3 🥺")
 	else:
+		config["DEFAULT"]["NaughtyCat"] = "on"
 		await message.channel.send("i will :3 from now on\n\n:3")
 
+	with open("settings.ini", "w") as configfile:
+		config.write(configfile)
 	IS_NAUGHTY_CAT_SETTING_ON = not IS_NAUGHTY_CAT_SETTING_ON
-
+	
 
 async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Message]:
 	server = await client.fetch_guild(server_id)
