@@ -28,6 +28,7 @@ BOT_NAME = "Maria"
 
 QUEER_PPL_SERVER_ID = 1264520434267848714
 CUTIE_ID = 365991661899218947
+MARIA_CHANNEL_ID = 1266295221814034452
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
@@ -92,19 +93,12 @@ unvalid_responses: dict[str, int] = {
 	DOG_MIDDLE_FINGER: 6,
 }
 
-# # TODO DELETE
-# MAX_TIME = datetime(2024, 2, 3, tzinfo=pytz.utc)
-# MAX_TIME = MAX_TIME.replace(tzinfo=timezone.utc)
-
-message_logs: list[str] = []
-dm_logs: list[str] = []
-
 # endregion
 
 @client.event
 async def on_ready() -> None:
-	print("NikkiBot is up and running :3")
-	
+	maria_channel = await client.fetch_channel(MARIA_CHANNEL_ID)
+	await maria_channel.send("hi, ich bin back :3")
 
 
 @client.event
@@ -230,16 +224,6 @@ async def toggle_naughty_cat(message: Message) -> None:
 	with open("settings.ini", "w") as configfile:
 		config.write(configfile)
 	IS_NAUGHTY_CAT_SETTING_ON = not IS_NAUGHTY_CAT_SETTING_ON
-	
-
-async def query_messages(server_id: int, channel_id: int, limit: int) -> list[Message]:
-	server = await client.fetch_guild(server_id)
-	if server is None:
-		print("no server found")
-		return list()
-	channel = cast(ServerTextChannel, server.get_channel(channel_id))
-	print(channel.name)
-	return [message async for message in channel.history(limit=limit)]
 
 
 def get_normalized_probability_weights() -> list[float]:
