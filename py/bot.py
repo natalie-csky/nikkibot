@@ -133,12 +133,26 @@ async def on_message(message: Message) -> None:
 		if not user_message == "":
 			await set_naughty_cat_chance(message, user_message)
 			is_valid_message = True
+			
+	if message.content.casefold().startswith(PREFIX + "dementia "):
+		user_message = message.content.casefold().removeprefix(PREFIX + "dementia ")
+		if not user_message == "":
+			await maria_dementia(message, user_message)
+			is_valid_message = True
+	
+	if message.content.casefold().startswith(PREFIX + "help") or message.content.casefold().startswith(PREFIX + "hilfe"):
+		await maria_help(message)
+		is_valid_message = True
 	# end commands
 	
 	if message.content.startswith(PREFIX) and not is_valid_message:
 		await send_wat(message)
 		return
 	
+	if message.channel.id == MARIA_CHANNEL_ID and not is_valid_message:
+		await groq_chat(message, message.content)
+		is_valid_message = True
+
 	if not is_valid_message and IS_NAUGHTY_CAT_SETTING_ON:
 		if is_naughty_cat_gamble_win():
 			await send_naughty_cat(message)
@@ -148,8 +162,43 @@ def is_naughty_cat_gamble_win() -> bool:
 	return random.randint(0,100) <= NAUGHTY_CAT_CHANCE_SETTING
 
 
+def is_digit(string: str) -> bool:
+	return (string.isdigit() or (string.startswith('-') and string[1:].isdigit()))
+
+
+async def maria_dementia(message: Message, user_message: str) -> None:
+	if not is_digit(user_message) and not user_message == "all":
+		await send_wat(message)
+		return
+	
+	if user_message == "all":
+		groq_message_history.clear()
+		await message.channel.send("hab alles vergessen :3")
+	
+	else:
+		amount_to_delete = int(user_message)
+		if amount_to_delete >= 1 and amount_to_delete <= 10:
+			del groq_message_history[-amount_to_delete*2:]
+			await message.channel.send("hab die letzten " + str(amount_to_delete) + " nachrichten vergessen :3")
+		else:
+			await message.channel.send("nöö, zwischen 1-10 nachrichten auf einmal bitte :3")
+
+
+
+async def maria_help(message: Message) -> None:
+	maria_channel_mention = (await client.fetch_channel(MARIA_CHANNEL_ID)).mention
+	cutie_user_name = (await client.fetch_user(CUTIE_ID)).display_name
+	await message.channel.send("- In " + maria_channel_mention + " kann man mit mir jederzeit chatten, ohne Befehle nutzen zu müssen :3\n" \
+			+ "- `!toggle :3` ist nur von " + cutie_user_name + " nutzbar und stellt die automatischen :3 antworten an und aus :3\n" \
+			+ "- `!chat` sorgt dafür, dass man mit mir in jedem kanal außerhalb von + " maria_channel_mention + " chatten kann, z.B. `!chat hi maria :3`\n" \
+			+ "- `!chance :3 [prozentzahl]` stellt die chance ein, dass ich automatisch mit :3 antworte, z.B. `!chance :3 50` würde dafür sorgen, dass ich nur auf 50% aller nachrichten mit :3 antworte :3\n" \
+			+ "- `!dementia [all]/[# an nachrichten]` sorgt dafür, dass man meine erinnerungen an den chat-verlauf löschen kann, z.B. für den fall, dass ich plötzlich nur noch mist schreibe oder wenn sonst nichts mehr in mein kleines Hirn reinpasst und ich daher aufhören muss zu schreiben:3 z.B. `!dementia all` löscht alle meine erinnerungen, während `!dementia 5` nur die letzten 5 nachrichten aus meinen erinnerungen löscht :3\n" \
+			+ "- `!help` oder `!hilfe` sendet die nachricht hier :3"\
+	)
+
+
 async def set_naughty_cat_chance(message: Message, user_message: str) -> None:
-	if not (user_message.isdigit() or (user_message.startswith('-') and user_message[1:].isdigit())):
+	if not is_digit(user_message):
 		await send_wat(message)
 		return
 
