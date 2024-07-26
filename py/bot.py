@@ -190,10 +190,10 @@ async def maria_help(message: Message) -> None:
 	cutie_user_name = (await client.fetch_user(CUTIE_ID)).display_name
 	await message.channel.send("- In " + maria_channel_mention + " kann man mit mir jederzeit chatten, ohne Befehle nutzen zu müssen :3\n" \
 			+ "- `!toggle :3` ist nur von " + cutie_user_name + " nutzbar und stellt die automatischen :3 antworten an und aus :3\n" \
-			+ "- `!chat` sorgt dafür, dass man mit mir in jedem kanal außerhalb von + " maria_channel_mention + " chatten kann, z.B. `!chat hi maria :3`\n" \
+			+ "- `!chat` sorgt dafür, dass man mit mir in jedem kanal außerhalb von " + maria_channel_mention + " chatten kann, z.B. `!chat hi maria :3`\n" \
 			+ "- `!chance :3 [prozentzahl]` stellt die chance ein, dass ich automatisch mit :3 antworte, z.B. `!chance :3 50` würde dafür sorgen, dass ich nur auf 50% aller nachrichten mit :3 antworte :3\n" \
 			+ "- `!dementia [all]/[# an nachrichten]` sorgt dafür, dass man meine erinnerungen an den chat-verlauf löschen kann, z.B. für den fall, dass ich plötzlich nur noch mist schreibe oder wenn sonst nichts mehr in mein kleines Hirn reinpasst und ich daher aufhören muss zu schreiben:3 z.B. `!dementia all` löscht alle meine erinnerungen, während `!dementia 5` nur die letzten 5 nachrichten aus meinen erinnerungen löscht :3\n" \
-			+ "- `!help` oder `!hilfe` sendet die nachricht hier :3"\
+			+ "- `!help` oder `!hilfe` sendet die nachricht hier :3" \
 	)
 
 
