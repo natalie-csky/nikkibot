@@ -5,3 +5,4 @@ web/*
 .venv/*
 token
 groq_api
+rapid_api

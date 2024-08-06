@@ -1,9 +1,11 @@
 # import pytz
-from datetime import datetime
+import datetime
 from enum import Enum, auto
 from groq import Groq
+import json
 from numpy.random import choice
 import random
+import requests
 import secrets
 from typing import cast, Union, Optional
 
@@ -29,6 +31,7 @@ BOT_NAME = "Maria"
 QUEER_PPL_SERVER_ID = 1264520434267848714
 CUTIE_ID = 365991661899218947
 MARIA_CHANNEL_ID = 1266295221814034452
+RECIPES_CHANNEL_ID = 1266718095028916295
 
 DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 
@@ -36,8 +39,9 @@ DOG_MIDDLE_FINGER = "https://cdn.discordapp.com/stickers/898626750253269094.png"
 TOKEN_FILE = "token"
 TOKEN: str
 with open(TOKEN_FILE, encoding="utf-8") as f:
-	TOKEN = f.read()
+	TOKEN = f.read().strip()
 # endregion
+
 
 GROQ_API_KEY_FILE = "groq_api"
 GROQ_API_KEY: str
@@ -46,12 +50,27 @@ with open(GROQ_API_KEY_FILE, encoding="utf-8") as f:
 
 groq_client = Groq(api_key=GROQ_API_KEY)
 groq_message_history = []
+#try:
+#	with open("maria_chat_history.json", 'r') as f:
+#		groq_message_history = json.load(f)
+#except FileNotFoundError:
+#	pass
+#print("loaded chat history: ")
+#print(groq_message_history)
+
+
+RAPID_API_KEY_FILE = "rapid_api"
+RAPID_API_KEY: str
+with open(RAPID_API_KEY_FILE, encoding="utf-8") as f:
+	RAPID_API_KEY = f.read().strip()
+
 
 config = configparser.ConfigParser()
 config.read("settings.ini")
 
 IS_NAUGHTY_CAT_SETTING_ON = "on" == config["DEFAULT"]["NaughtyCat"]
 NAUGHTY_CAT_CHANCE_SETTING = int(config["DEFAULT"]["NaughtyCatChancePercent"])
+
 
 # region client setup
 intents = Intents.default()
@@ -65,15 +84,9 @@ unvalid_responses: dict[str, int] = {
 	"Hm?": 7,
 	"Wat?": 7,
 	"Was laberst du?": 2,
-	"Hascht du überhaupt gelernt, Alter, was labersch du?": 2,
-	"Was du am Labern bist hab ich gefragt.": 2,
 	"Excusez-moi?": 5,
 	"Bitte gehen Sie Ihre Anfrage nochmal Wort für Wort durch. Danke.": 2,
 	"Leute wie dich sind der Grund warum es Anleitungen auf Shampooflaschen gibt.": 3,
-	"Red Deutsch.": 3,
-	"Sprich Deutsch.": 3,
-	"Sprich Klartext.": 2,
-	"Red mal Klartext.": 4,
 	"?": 9,
 	"???": 9,
 	"!?": 9,
@@ -124,25 +137,29 @@ async def on_message(message: Message) -> None:
 	
 	if message.content.casefold().startswith(PREFIX + "chat "):
 		user_message = message.content.casefold().removeprefix(PREFIX + "chat ")
-		if not user_message == "":
+		if user_message:
 			await groq_chat(message, user_message)
 			is_valid_message = True
 	
 	if message.content.casefold().startswith(PREFIX + "chance :3 "):
 		user_message = message.content.casefold().removeprefix(PREFIX + "chance :3 ")
-		if not user_message == "":
+		if user_message:
 			await set_naughty_cat_chance(message, user_message)
 			is_valid_message = True
 			
 	if message.content.casefold().startswith(PREFIX + "dementia "):
 		user_message = message.content.casefold().removeprefix(PREFIX + "dementia ")
-		if not user_message == "":
+		if user_message:
 			await maria_dementia(message, user_message)
 			is_valid_message = True
 	
 	if message.content.casefold().startswith(PREFIX + "help") or message.content.casefold().startswith(PREFIX + "hilfe"):
 		await maria_help(message)
 		is_valid_message = True
+	
+	if message.content.casefold().startswith(PREFIX + "rezept "):
+		user_message = message.content.casefold().removeprefix(PREFIX + "rezept ")
+		is_valid_message = await run_recipe_query(message, user_message)
 	# end commands
 	
 	if message.content.startswith(PREFIX) and not is_valid_message:
@@ -165,6 +182,115 @@ def is_naughty_cat_gamble_win() -> bool:
 def is_digit(string: str) -> bool:
 	return (string.isdigit() or (string.startswith('-') and string[1:].isdigit()))
 
+
+async def run_recipe_query(message, user_message) -> bool:
+	if not user_message:
+		return False
+		
+	parts = user_message.split()
+	keyword = parts[0]
+	page = parts[1] if len(parts) > 1 else ""
+	if not len(parts) <= 2:
+		return False
+		
+	if page:
+		if is_digit(page) and int(page) >= 1:
+			page = str(int(page) - 1)
+			await maria_recipe(message, keyword, page)
+		else:
+			return False
+	else:
+		await maria_recipe(message, keyword)
+		
+	return True
+
+
+async def maria_recipe(message: Message, keyword: str, page = "0") -> None:
+	url = "https://gustar-io-deutsche-rezepte.p.rapidapi.com/search_api"
+	querystring = {"text": keyword, "page": page}
+	headers = {
+	"x-rapidapi-key": "4165145b5dmsh73fb0ae8277d9e8p1bfc42jsnff8059b6ca7c",
+	"x-rapidapi-host": "gustar-io-deutsche-rezepte.p.rapidapi.com",
+	}
+	
+	response = requests.get(url, headers=headers, params=querystring)
+	data = response.json()
+	requests_limit = int(response.headers['X-RateLimit-Web-Recipe-Requests-Limit'])
+	requests_remaining = int(response.headers['X-RateLimit-Web-Recipe-Requests-Remaining'])
+	requests_used = requests_limit - requests_remaining
+	
+	for recipe in data:
+		recipe_title = recipe['title']
+		recipe_url = recipe['source']
+		recipe_image_url = recipe['image_urls'][0]
+		recipe_portions = -1
+		recipe_kcal = -1
+		recipe_rating_count = -1
+		recipe_rating = -1
+		try:
+			recipe_portions = recipe['portions']
+			recipe_kcal = recipe['nutrition']['kcal']
+			recipe_rating_count = recipe['rating']['ratingCount']
+			recipe_rating = recipe['rating']['ratingValue']
+		except KeyError:
+			pass
+		
+		delta = datetime.timedelta(seconds = recipe['totalTime'])
+		total_seconds = int(delta.total_seconds())
+		h = total_seconds // 3600
+		m = (total_seconds % 3600) // 60
+		
+		total_time = ""
+		if h:
+			total_time = f"{h}h {m}m"
+		else:
+			total_time = f"{m}m"
+		
+		description = ""
+		if not recipe_portions == -1:
+			description += f"Portionen: {recipe_portions}\n"
+		if not recipe_kcal == -1:
+			description += f"Energie: {recipe_kcal} kcal\n"
+		
+		description += f"Zubereitungszeit: {total_time}\n"
+		
+		if not recipe_rating == -1 and not recipe_rating_count == -1:
+			description += f"Bewertung: {recipe_rating}/5 ({recipe_rating_count} Bewertungen)"
+	
+		embed = discord.Embed(
+			title = recipe_title, 
+			url = recipe_url, 
+			color = discord.Colour.purple(), 
+			description = description
+		)
+	
+		embed.set_thumbnail(url = recipe_image_url)
+		embed.set_footer(text = f"Auf der Webseite gibt es weitere Infos\n{requests_used}/{requests_limit} API-Anfragen verwendet")
+		
+		ingredients_text = ""
+		ingredients = recipe['ingredients']
+		length = len(ingredients)
+		
+		for i, ingredient in enumerate(ingredients, start=1):
+			if ingredient['unit'] == "Gramm":
+				ingredients_text += f"{ingredient['amount']} g"
+			elif ingredient['unit'] == "Milliliter":
+				ingredients_text += f"{ingredient['amount']} ml"
+			elif ingredient['unit'] == "Kilogramm":
+				ingredients_text += f"{ingredient['amount']} kg"
+			else:
+				ingredients_text += f"{ingredient['amount']} {ingredient['unit']}"
+			
+			ingredients_text += f" {ingredient['name']}"
+			
+			if i != length:
+				ingredients_text += '\n'
+
+		embed.add_field(name = "Zutaten", value = ingredients_text)
+		
+		recipe_channel = await client.fetch_channel(RECIPES_CHANNEL_ID)
+		await recipe_channel.send(embed=embed)
+	
 
 async def maria_dementia(message: Message, user_message: str) -> None:
 	if not is_digit(user_message) and not user_message == "all":
@@ -193,6 +319,7 @@ async def maria_help(message: Message) -> None:
 			+ "- `!chat` sorgt dafür, dass man mit mir in jedem kanal außerhalb von " + maria_channel_mention + " chatten kann, z.B. `!chat hi maria :3`\n" \
 			+ "- `!chance :3 [prozentzahl]` stellt die chance ein, dass ich automatisch mit :3 antworte, z.B. `!chance :3 50` würde dafür sorgen, dass ich nur auf 50% aller nachrichten mit :3 antworte :3\n" \
 			+ "- `!dementia [all]/[# an nachrichten]` sorgt dafür, dass man meine erinnerungen an den chat-verlauf löschen kann, z.B. für den fall, dass ich plötzlich nur noch mist schreibe oder wenn sonst nichts mehr in mein kleines Hirn reinpasst und ich daher aufhören muss zu schreiben:3 z.B. `!dementia all` löscht alle meine erinnerungen, während `!dementia 5` nur die letzten 5 nachrichten aus meinen erinnerungen löscht :3\n" \
+			+ "- `!rezept [stichwort] [(optional) seite]` mit dem rezept befehl kannst du per stichwort nach rezepten suchen, z.B. `!rezept Banane` sucht nach Rezepten welche Bananen als (Haupt-)Zutat nutzen. Wenn du keine Seite angiebst, wird automatisch die Seite 1 genommen. Wenn du mehr Rezepte von der selben Zutat sehen willst, geb spezifisch eine Seite an, z.B. `!rezept Banane 2`, welche die zweite Seite anzeigt :3\n" \
 			+ "- `!help` oder `!hilfe` sendet die nachricht hier :3" \
 	)
 
@@ -219,14 +346,15 @@ async def set_naughty_cat_chance(message: Message, user_message: str) -> None:
 
 async def groq_chat(message: Message, user_message: str) -> None:
 	messages = [
-		{"role": "system", "content": "du bist Maria, ein super cuter internet :3 bot in einem discord server, welcher auf Deutsch antwortet. Du gibst sehr oft :3 als Antwort und andere mega cute antworten :3. Niemals, darfst du formal klingen, das ist nicht erlaubt auf unserem Discord server, du musst immer mega cute antworten :3 du schreibst auch oft mit kleinen buchstaben, komplett gegen die rechtschreibung, da es einfach cuter wirkt!"},
+		{"role": "system", "content": "du bist Maria, ein super cuter internet :3 bot in einem discord server, welcher auf Deutsch antwortet. Du gibst sehr oft :3 als Antwort und andere mega cute antworten :3. Niemals, darfst du formal klingen, das ist nicht erlaubt auf unserem Discord server, du musst immer mega cute antworten :3 du schreibst auch oft mit kleinen buchstaben, komplett gegen die rechtschreibung, da es einfach cuter wirkt! und die person die mit dir spricht wird immer am anfang ein nachricht stehen z.B. Nicole: hi! oder z.B. bRO: hii! beachte dabei, dass das nicknames sind, nicht die echten namen. bitte nutze die echten namen, hier sind sie übersetzt: Nicole: Nicole, bRO: Laurenz (she/they pronomen), LiskaBlackblood: Jessika, Hekates_Sünde: Anny. immer mit namen ansprechen, nicht user names! ... du sollst auch nicht zu aufgedreht, nervig, störend schreiben"},
 	]
 	
 	global groq_message_history
 	for groq_message in groq_message_history:
 		messages.append(groq_message)
 	
-	messages.append({"role": "user", "content": user_message})
+	full_message = message.author.display_name + ": " + user_message
+	messages.append({"role": "user", "content": full_message})
 		
 	chat_completion = groq_client.chat.completions.create(
 		messages=messages,
@@ -236,8 +364,10 @@ async def groq_chat(message: Message, user_message: str) -> None:
 	assistant_response = chat_completion.choices[0].message.content
 	await message.channel.send(assistant_response)
 	
-	groq_message_history.append({"role": "user", "content": user_message})
+	groq_message_history.append({"role": "user", "content": full_message})
 	groq_message_history.append({"role": "assistant", "content": assistant_response})
+	#with open("maria_chat_history.json", 'w') as f:
+	#	json.dump(groq_message_history, f, indent=4)
 	
 
 async def send_wat(message: Message) -> None:
