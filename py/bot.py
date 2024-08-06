@@ -7,6 +7,7 @@ from numpy.random import choice
 import random
 import requests
 import secrets
+import sys
 from typing import cast, Union, Optional
 
 # noinspection PyUnresolvedReferences
@@ -24,6 +25,20 @@ TextableChannel = Union[VoiceChannel, StageChannel, TextChannel, Thread]  # why
 Server = Guild
 Author = Union[Member, User]
 # endregion
+
+
+QUIET_START = False
+
+if len(sys.argv) > 2:
+	print("too many args")
+	sys.exit()
+
+if sys.argv[1] == "-q":
+	QUIET_START = True
+else:
+	print ("unknown arg")
+	sys.exit()
+
 
 PREFIX = "!"
 BOT_NAME = "Maria"
@@ -110,8 +125,9 @@ unvalid_responses: dict[str, int] = {
 
 @client.event
 async def on_ready() -> None:
-	maria_channel = await client.fetch_channel(MARIA_CHANNEL_ID)
-	await maria_channel.send("hi, ich bin back :3")
+	if not QUIET_START:
+		maria_channel = await client.fetch_channel(MARIA_CHANNEL_ID)
+		await maria_channel.send("hi, ich bin back :3")
 
 
 @client.event

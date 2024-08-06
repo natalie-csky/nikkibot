@@ -6,3 +6,4 @@ web/*
 token
 groq_api
 rapid_api
+my_venv/*
